@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "meditation-maker",
+  "private_key_id": "955bdff0511fae3f32860870b466e376ac4bbbd5",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC7pkpHUhc5NHjz\naloP7wWoQO69XaUmIS2jvsGnlQboUVgtaWMXasR/mUYdsbGbyDs5NvXXBRhAelKS\nq8VYZl0fgHaQkDoDa1AjbF6TZJOZzuryvff2U1aqTbXmlLu2vt7z2SHxSWRD5ri7\nxdIZQVyqwxm0lPnFOO3dvx3E8tZzAR23aeiZvuLMwv4p2OkuzncEISjcFjSpJOJ0\nUM3TcZ0zJyDBtojHjTl5DO+lnaGHTxBm2Fvj3HguhSWIyJVZwgvUFkS1gV2UsfWU\nD16ONCdUCX+9U3wpz7LVUGJNgRXLANekMgWak750DpvIi0hvswZRT6vyI5CU/WFn\n+Ya3VwPvAgMBAAECggEAUDBBsbSs4+8+eJbMId78xefpnda0ylSHUmAkFV8j8odA\nbTeJ9unTSsvPIMVcprusQ0jvSZGNyY/8VV0+Gga0aM/W2vQnNmrXdivLRqVGRgYc\ndNslaYg3ktNelkic5v0t/XqefKPmSvX/n45ruAssdHSnOXooOlWXoJkZOZ6kccQe\nNXdVZrzdP9GdvhnnsjWnO6El+ss2clhVzuUsbLD6GYrRKrDPLbHb1y5j94i732X7\nFOAmXJ40HrBal6Ecisk6bnShOTfaTZW0HvXT6O/CdVdqz2FngueGRtrYDHun6YDo\nh9vjU6/Fk+faJRkAnAODgBMeGRKb0+9w/cDhJyUe4QKBgQDwXB5duGnICjEvPf5C\nJr6ndPU4Dpwudr0gGoUu/N1r9U1IrCmR9Fh0IypLd7axDKuWfg2O13swdXzmLnA+\norJtIG16WcyER9Vd6Ue9Na8dKYLaaHFV2/NHWBo3Z+ViMjpoDCMI2grEEFb4lmz8\nUxLeUvzXyJUmgjgb20KnIwa1+QKBgQDH3CGPP7gLtTdH5QBsrMlk9vQz+HI+PBG5\nQOL49/w1Ywcac5xXIQEE8la9D7+/pazeYNZmCqy0QO9MpNiaLQRrm2hxBDfcTbiL\nHqZ6NztHN53qy4xvuJSnLPsXQAhdbI/wBD8TbOdyZOkuQbhzvMqTDi++kd2jsUx5\nsluVhQJjJwKBgQCh6xyVvCaemKcbkSKYg6tJ+dM76TOzZU/wsYzo43VyRbTDcR8r\n8LQpwIq8fi/3Q3bQEaimgmi9c1gpZD0/JLEYLJEzrAzHS/Djq8QlJWYLOiypX1SC\nJ4LSm/pFOtte9EE+WHa9fs1j2TINkqBmtrvuQ2+LGdfIMk8EDQfwufrKWQKBgHxq\nn0Gr6wju0PEisDb3AZCm47MOsR/pCSeIK0POLOWXNi7TVbovw5CuxCyCB15o5sqx\nAgcYEhdMbSwLWwPvjlbmsgfZFmVAxOdmN0DR7UcSam5mNJDAGVpQ+CarKAnwsVI7\ncoDHRPXDuB2hsA/ssTcGl9ZMu+tRTkhcLgNQgAH1AoGBANyhh1WBhj0FhB5jN3zP\nvRZnpgT42LYO+yex/QeR3NeOR2pubfUZFsuy3qjpyIMRICIVgJCjbNNiU52LcrIz\nsAE2yYI6ZBqvMGsMtrAhNWLuR28B2xcfC3cEjD+18hLV0W5ymIZKcDe62bF2YTSV\nQlPWHBQHh1KC0xHS0W9/5xPu\n-----END PRIVATE KEY-----\n",
+  "client_email": "meditation-maker@appspot.gserviceaccount.com",
+  "client_id": "102746876387499507660",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/meditation-maker%40appspot.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

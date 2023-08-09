@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "meditation-maker"
+  },
+  "functions": {
+    "predeploy": "npm --prefix functions run build"
+  }
+}

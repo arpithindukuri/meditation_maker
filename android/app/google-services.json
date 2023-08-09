@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1026081387704",
+    "project_id": "meditation-maker",
+    "storage_bucket": "meditation-maker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026081387704:android:783719f35210a1e7c0b04d",
+        "android_client_info": {
+          "package_name": "com.example.meditation_maker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1026081387704-9o90nt19bp2u25c8jrmtq6cac9cnn3ea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRaeMmzSdja2SskVnFYvzb_prJew0LgBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1026081387704-9o90nt19bp2u25c8jrmtq6cac9cnn3ea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

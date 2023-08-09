@@ -11,6 +11,11 @@
 // import * as logger from "firebase-functions/logger";
 import * as functions from "firebase-functions";
 
+// The Firebase Admin SDK to access Firestore.
+import { initializeApp } from "firebase-admin/app";
+
+initializeApp();
+
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
 

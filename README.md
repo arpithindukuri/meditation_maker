@@ -1,6 +1,8 @@
-# meditation_maker
+# Meditation Maker
 
-A new Flutter project.
+An app which lets you create meditations.
+
+---
 
 ## Run
 
@@ -10,11 +12,24 @@ A new Flutter project.
 
 ### Firebase
 
-Run **IN ./functions DIRECTORY**:
+1. Initialize ADC env var
 
-```npm run serve```
+```powershell
+$GOOGLE_APPLICATION_CREDENTIALS="C:\Users\daniel\AppData\Roaming\gcloud\application_default_credentials.json"
+```
+
+2. Run **IN ./functions DIRECTORY**:
+
+```powershell
+npm run serve
+```
+
+---
 
 ## Deploy
 
 ### Firebase
-```firebase deploy --only functions``
+
+```powershell
+firebase deploy --only functions
+```

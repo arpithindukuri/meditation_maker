@@ -1,11 +1,16 @@
+import 'dart:convert';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/texttospeech/v1.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+
+import 'ssml.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,11 +54,7 @@ class _VerticalListState extends State<VerticalList> {
   late List<String> inputs;
   List<TextEditingController> controllers = [];
 
-  late GoogleSignIn googleSignIn;
-  late GoogleSignInAccount? googleSignInAccount;
-
-  late TexttospeechApi textToSpeechAPI;
-  late String audio;
+  late SynthesizeSpeechResponse ttsResponse;
 
   final player = AudioPlayer();
 
@@ -64,10 +65,10 @@ class _VerticalListState extends State<VerticalList> {
     // init inputs
     inputs = [
       'Find a quiet place where you won\'t be disturbed.',
-      'Sit comfortably with your back straight and your hands resting on your lap.',
-      'Close your eyes and take a deep breath in through your nose, hold it for a few seconds, then exhale slowly through your mouth.',
-      'Focus on your breath as it goes in and out of your body. If your mind starts to wander, gently bring it back to your breath.',
-      'Continue breathing deeply and focusing on your breath for as long as you like.',
+      // 'Sit comfortably with your back straight and your hands resting on your lap.',
+      // 'Close your eyes and take a deep breath in through your nose, hold it for a few seconds, then exhale slowly through your mouth.',
+      // 'Focus on your breath as it goes in and out of your body. If your mind starts to wander, gently bring it back to your breath.',
+      // 'Continue breathing deeply and focusing on your breath for as long as you like.',
     ];
 
     // init controllers
@@ -84,19 +85,32 @@ class _VerticalListState extends State<VerticalList> {
     }
   }
 
-  Future<void> callFunction() async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('repeat');
-    final results = await callable(<String, dynamic>{
-      'message': 'A message sent from a client device',
-      'count': inputs.length
-    });
-    var result = results.data;
+  Future<void> getTTSAudio() async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('synthesize');
 
-    print(result);
+    final response =
+        await callable(<String, dynamic>{'ssml': listToSSML(inputs)});
+
+    print(jsonDecode(response.data['jsonString'])['audioContent']['data']);
+
+    setState(() {
+      ttsResponse = SynthesizeSpeechResponse.fromJson({
+        "audioContent": String.fromCharCodes(Uint8List.fromList(
+            (jsonDecode(response.data['jsonString'])['audioContent']['data']
+                    as List<dynamic>)
+                .cast<int>()))
+      });
+    });
   }
 
   Future<void> playAudio() async {
-    await player.setSourceBytes(Uint8List.fromList(audio.codeUnits));
+    await getTTSAudio();
+
+    // TODO: this is not implemented for web.
+    // instead of setting bytes from list, save it to an mp3 file locally and play that.
+    await player.setSourceBytes(
+        Uint8List.fromList(ttsResponse.audioContent?.codeUnits ?? []));
 
     await player.resume();
   }
@@ -125,7 +139,7 @@ class _VerticalListState extends State<VerticalList> {
       floatingActionButton: Row(
         children: [
           FloatingActionButton(
-            onPressed: callFunction,
+            onPressed: playAudio,
             child: const Icon(Icons.play_arrow),
           ),
           FloatingActionButton(

@@ -40,10 +40,12 @@ dependencies:
   googleapis_auth: ^1.4.1
   google_sign_in: ^6.1.4
   extension_google_sign_in_as_googleapis_auth: ^2.0.10
-  audioplayers: ^5.0.0
   firebase_core: ^2.15.0
   cloud_functions: ^4.3.4
   firebase_auth: ^4.7.2
+  path_provider: ^2.1.0
+  just_audio: ^0.9.34
+  flutter_riverpod: ^2.3.7
 
 dev_dependencies:
   flutter_test:

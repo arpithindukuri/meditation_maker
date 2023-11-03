@@ -8,7 +8,7 @@
  */
 
 // import { onRequest } from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+// import * as logger from "firebase-functions/logger";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import textToSpeech from "@google-cloud/text-to-speech";

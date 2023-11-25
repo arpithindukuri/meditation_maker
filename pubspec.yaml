@@ -19,7 +19,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.19.2 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -36,16 +37,19 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: ^6.0.5
   googleapis: ^11.3.0
-  http: ^0.13.6
+  http: ^1.1.0
   googleapis_auth: ^1.4.1
   google_sign_in: ^6.1.4
   extension_google_sign_in_as_googleapis_auth: ^2.0.10
   firebase_core: ^2.15.0
   cloud_functions: ^4.3.4
   firebase_auth: ^4.7.2
-  path_provider: ^2.1.0
+  path_provider: ^2.1.1
   just_audio: ^0.9.34
-  flutter_riverpod: ^2.3.7
+  flutter_riverpod: ^2.4.6
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  riverpod_annotation: ^2.3.1
 
 dev_dependencies:
   flutter_test:
@@ -56,7 +60,19 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
+  isar_generator: ^3.1.0+1
+  build_runner:
+  riverpod_generator: ^2.3.6
+  custom_lint:
+  riverpod_lint: ^2.3.6
+
+dependency_overrides:
+  analyzer: ">=4.6.0 <6.0.0"
+
+analyzer:
+  plugins:
+    - custom_lint
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

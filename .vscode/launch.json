@@ -5,9 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "meditation_maker",
+      "name": "meditation_maker web debug",
       "request": "launch",
       "type": "dart",
+      "preLaunchTask": "flutter pub run build_runner build",
       "args": ["--device-id=edge", "--web-hostname=localhost", "--web-port=4850"]
     },
     {

@@ -2,32 +2,32 @@ import 'dart:convert';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:googleapis/texttospeech/v1.dart';
 import 'package:meditation_maker/util/custom_audio_source.dart';
 import 'package:meditation_maker/model/project.dart';
-import 'package:meditation_maker/provider/project_provider.dart';
 import 'package:just_audio/just_audio.dart';
 
-class AudioEditor extends ConsumerStatefulWidget {
+class AudioEditor extends StatefulWidget {
   const AudioEditor({super.key});
 
   @override
-  ConsumerState<AudioEditor> createState() => _AudioEditorState();
+  State<AudioEditor> createState() => _AudioEditorState();
 }
 
-class _AudioEditorState extends ConsumerState<AudioEditor> {
+class _AudioEditorState extends State<AudioEditor> {
   List<TextEditingController> controllers = [];
 
   late SynthesizeSpeechResponse ttsResponse;
 
   final player = AudioPlayer();
 
+  late Project project;
+
   @override
   void initState() {
     super.initState();
 
-    Project project = ref.read(projectProvider);
+    project = Project(name: "Proj. 1", inputs: defaultInputs);
 
     // init controllers
     controllers = List.generate(project.inputs.length, (index) {
@@ -44,26 +44,22 @@ class _AudioEditorState extends ConsumerState<AudioEditor> {
 
     for (TextEditingController controller in controllers) {
       controller.addListener(() {
-        ref
-            .read(projectProvider.notifier)
-            .editInput(controllers.indexOf(controller), controller.text);
-
-        // setState(() {
-        //   project.inputs[controllers.indexOf(controller)] = controller.text;
-        // });
+        final input = project.inputs[controllers.indexOf(controller)];
+        if (input is SpeakInput) {
+          setState(() {
+            project.inputs[controllers.indexOf(controller)] =
+                SpeakInput(text: controller.text);
+          });
+        }
       });
     }
   }
 
   Future<void> getTTSAudio() async {
-    Project project = ref.watch(projectProvider);
-
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('synthesize');
 
     final ssml = project.toSSMLString();
-
-    print(ssml);
 
     final response = await callable(<String, dynamic>{'ssml': ssml});
 
@@ -93,7 +89,7 @@ class _AudioEditorState extends ConsumerState<AudioEditor> {
   }
 
   void addInput() {
-    ref.read(projectProvider.notifier).addInput();
+    // TODO: ref.read(projectProvider.notifier).addInput();
 
     setState(() {
       controllers.add(TextEditingController());
@@ -101,7 +97,7 @@ class _AudioEditorState extends ConsumerState<AudioEditor> {
   }
 
   void removeInput(int index) {
-    ref.read(projectProvider.notifier).deleteInput(index);
+    // TODO: ref.read(projectProvider.notifier).deleteInput(index);
 
     setState(() {
       // inputs.removeAt(index);
@@ -111,7 +107,7 @@ class _AudioEditorState extends ConsumerState<AudioEditor> {
 
   @override
   Widget build(BuildContext context) {
-    Project project = ref.watch(projectProvider);
+    // TODO: Project project = ref.watch(projectProvider);
 
     return Scaffold(
       floatingActionButton: Row(

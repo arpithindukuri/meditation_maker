@@ -8,7 +8,6 @@
       "name": "meditation_maker web debug",
       "request": "launch",
       "type": "dart",
-      "preLaunchTask": "flutter pub run build_runner build",
       "args": ["--device-id=edge", "--web-hostname=localhost", "--web-port=4850"]
     },
     {

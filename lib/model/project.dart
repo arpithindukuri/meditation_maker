@@ -1,42 +1,45 @@
-import 'package:isar/isar.dart';
 import 'package:meditation_maker/util/ssml.dart';
 
-part 'project.g.dart';
+List<Input> defaultInputs = [
+  SpeakInput(text: '111'),
+  SpeakInput(text: '222'),
+  SpeakInput(text: '333'),
+  SpeakInput(text: '444'),
+  SpeakInput(text: '555'),
+];
 
 enum InputType { speak, pause }
 
-class Input {
-  @Enumerated(EnumType.name)
-  InputType? type;
+abstract class Input {
+  InputType type;
 
-  Input({this.type});
+  Input({required this.type});
 }
 
-@embedded
 class SpeakInput extends Input {
-  String? text;
+  String text;
 
-  SpeakInput({this.text}) : super(type: InputType.speak);
+  SpeakInput({required this.text}) : super(type: InputType.speak);
 }
 
-@embedded
 class PauseInput extends Input {
-  num? delayMS;
+  num delayMS;
 
-  PauseInput({this.delayMS}) : super(type: InputType.pause);
+  PauseInput({required this.delayMS}) : super(type: InputType.pause);
 }
 
-@collection
 class Project {
-  Id? id = Isar.autoIncrement;
+  String name;
 
-  String? name;
+  List<Input> inputs;
 
-  List<Input>? inputs;
-
-  Project({this.name, this.inputs});
+  Project({required this.name, required this.inputs});
 
   String toSSMLString() {
-    return inputsToSSML(inputs ?? []);
+    return inputsToSSML(inputs);
+  }
+
+  Project copyWith({String? name, List<Input>? inputs}) {
+    return Project(name: name ?? this.name, inputs: inputs ?? this.inputs);
   }
 }

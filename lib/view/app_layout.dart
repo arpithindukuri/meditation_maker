@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:meditation_maker/redux/project_list_redux.dart';
 import 'package:meditation_maker/redux/redux_store.dart';
 import 'package:meditation_maker/view/project_list.dart';
 
@@ -16,7 +17,18 @@ class AppLayout extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.teal,
         ),
-        home: const ProjectList(),
+        home: Scaffold(
+            body: const ProjectList(),
+            appBar: AppBar(
+              title: const Center(child: Text("Meditation Maker")),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                store.dispatch(CreateProjectAction());
+              },
+              tooltip: 'Add Project',
+              child: const Icon(Icons.add),
+            )),
       ),
     );
   }

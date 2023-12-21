@@ -8,7 +8,9 @@ An app which lets you create meditations.
 
 ### 1. Flutter
 
-1. Run this command to initialize Isar DB.
+1. Get flutter emulator device ID using `flutter devices`. Put this in the launch.json emulator debug configuration under `deviceId`.
+
+2. Run this command to initialize Isar DB.
 
    ```
    flutter pub run build_runner build
@@ -20,9 +22,9 @@ An app which lets you create meditations.
    dart run build_runner watch
    ```
 
-2. Select the desired device in VSCode.
+3. Select the desired device in VSCode.
 
-3. Start the flutter app using `Ctrl` + `F5`.
+4. Start the flutter app using `Ctrl` + `F5`.
 
    1. Not sure, but I think the full command is this.
 
@@ -39,11 +41,13 @@ An app which lets you create meditations.
 
 IGNORE STEP 1 FOR NOW.
 ~~
+
 1. Initialize ADC env var
 
 ```powershell
 $GOOGLE_APPLICATION_CREDENTIALS="C:\Users\daniel\AppData\Roaming\gcloud\application_default_credentials.json"
 ```
+
 ~~
 
 2. Run **IN ./functions DIRECTORY**:

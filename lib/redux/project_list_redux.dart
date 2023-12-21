@@ -1,38 +1,149 @@
+import 'dart:io';
+
+import 'package:meditation_maker/model/app_state.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:redux/redux.dart';
 import 'package:meditation_maker/model/project.dart';
 
-sealed class Action {}
+sealed class ProjectListAction {}
 
-class InitializeAction extends Action {}
+class LoadProjectsAction extends ProjectListAction {}
 
-// class OpenProjectAction extends Action {
-//   final int index;
+class SetProjectsAction extends ProjectListAction {
+  final List<Project> projects;
 
-//   OpenProjectAction(this.index);
-// }
-
-// class AddInputAction extends Action {}
-
-final projectListReducer = combineReducers<List<Project>>([
-  TypedReducer<List<Project>, InitializeAction>(_initialize).call,
-  // TypedReducer<List<Project>, OpenProjectAction>(_openProject).call,
-  // TypedReducer<Project?, AddInputAction>(_addInput).call,
-]);
-
-List<Project> _initialize(List<Project>? state, InitializeAction action) {
-  return [
-    Project(name: "Proj. 1", inputs: defaultInputs),
-    Project(name: "Proj. 2", inputs: defaultInputs),
-    Project(name: "Proj. 3", inputs: defaultInputs),
-  ];
+  SetProjectsAction({required this.projects});
 }
 
-// List<Project>? _openProject(List<Project>? state, OpenProjectAction action) {
-//   if(action.index < 0 || action.index >= state!.length) return state;
+class CreateProjectAction extends ProjectListAction {}
+
+class DeleteProjectAction extends ProjectListAction {
+  final Project project;
+
+  DeleteProjectAction({required this.project});
+}
+
+class SaveProjectAction extends ProjectListAction {
+  final Project project;
+
+  SaveProjectAction({required this.project});
+}
+
+final List<
+        dynamic Function(Store<AppState>, dynamic, dynamic Function(dynamic))>
+    projectListMiddleware = [
+  TypedMiddleware<AppState, LoadProjectsAction>(_loadProjectsMiddleware).call,
+  TypedMiddleware<AppState, CreateProjectAction>(_createProjectMiddleware).call,
+  TypedMiddleware<AppState, DeleteProjectAction>(_deleteProjectMiddleware).call,
+];
+
+final projectListReducer = combineReducers<List<Project>>([
+  // TypedReducer<List<Project>, LoadProjectsAction>(_loadProjects).call,
+  TypedReducer<List<Project>, SetProjectsAction>(_setProjects).call,
+  // TypedReducer<List<Project>, CreateProjectAction>(_createProject).call,
+  // TypedReducer<List<Project>, DeleteProjectAction>(_deleteProject).call,
+]);
+
+// List<Project> _loadProjects(List<Project>? state, LoadProjectsAction action) {
+//   if (state == null) return [];
+
+//   return state;
 // }
 
-// Project? _addInput(Project? state, AddInputAction action) {
-//   if (state == null) return null;
+List<Project> _setProjects(List<Project>? state, SetProjectsAction action) {
+  return action.projects;
+}
 
-//   return state.copyWith(inputs: [...state.inputs, SpeakInput(text: '')]);
+void _loadProjectsMiddleware(
+    Store<AppState> state, LoadProjectsAction action, next) async {
+  final localDir = await getApplicationDocumentsDirectory();
+
+  final files = localDir.listSync();
+
+  List<Project> projects = [];
+
+  for (final file in files) {
+    if (file is File) {
+      final project = Project.fromJsonString(file.readAsStringSync());
+
+      if (project != null) {
+        projects.add(project);
+      } else {
+        projects.add(Project(
+            name: 'ERROR: File is not a Project JSON at path: "${file.path}"',
+            inputs: []));
+      }
+    }
+  }
+
+  state.dispatch(SetProjectsAction(projects: projects));
+
+  next(action);
+}
+
+// TODO: move to util file
+Future<String> getNewProjectName() async {
+  final localDir = await getApplicationDocumentsDirectory();
+  final localPath = localDir.path;
+
+  String newProjName = "New Project";
+  int duplicateNum = 0;
+
+  File file = File('$localPath/$newProjName.json');
+
+  // if it does, check if '$newProjName $duplicateNum.json' exists,
+  while (file.existsSync() && duplicateNum < 100) {
+    // and increment duplicateNum until a file with such a name doesn't exist
+    duplicateNum++;
+    file = File('$localPath/$newProjName $duplicateNum.json');
+  }
+
+  // then set newProjName to '$newProjName $duplicateNum'
+  newProjName = duplicateNum > 0 ? '$newProjName $duplicateNum' : newProjName;
+
+  return newProjName;
+}
+
+void _createProjectMiddleware(
+    Store<AppState> state, CreateProjectAction action, next) async {
+  final localDir = await getApplicationDocumentsDirectory();
+
+  final localPath = localDir.path;
+
+  final newProjName = await getNewProjectName();
+
+  final file = File('$localPath/$newProjName.json');
+
+  final newProject = Project(name: newProjName);
+
+  await file.writeAsString(newProject.toJsonString());
+
+  state.dispatch(LoadProjectsAction());
+
+  next(action);
+}
+
+// List<Project> _createProject(List<Project> state, CreateProjectAction action) {
+//   return state;
+// }
+
+void _deleteProjectMiddleware(
+    Store<AppState> state, DeleteProjectAction action, next) async {
+  final localDir = await getApplicationDocumentsDirectory();
+
+  final localPath = localDir.path;
+
+  final file = File('$localPath/${action.project.name}.json');
+
+  if (file.existsSync()) {
+    file.deleteSync();
+  }
+
+  state.dispatch(LoadProjectsAction());
+
+  next(action);
+}
+
+// List<Project> _deleteProject(List<Project> state, DeleteProjectAction action) {
+//   return state;
 // }

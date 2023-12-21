@@ -5,10 +5,21 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "meditation_maker emulator debug",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "deviceId": "emulator-5554"
+    },
+    {
       "name": "meditation_maker web debug",
       "request": "launch",
       "type": "dart",
-      "args": ["--device-id=edge", "--web-hostname=localhost", "--web-port=4850"]
+      "args": [
+        "--device-id=edge",
+        "--web-hostname=localhost",
+        "--web-port=4850"
+      ]
     },
     {
       "name": "meditation_maker (profile mode)",

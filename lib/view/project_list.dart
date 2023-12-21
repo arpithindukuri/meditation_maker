@@ -19,8 +19,7 @@ class ProjectListState extends State<ProjectList> {
     return StoreConnector<AppState, List<Project>>(
         converter: (store) => store.state.projectList,
         onInit: (store) {
-          // TODO: load list from local device
-          store.dispatch(InitializeAction());
+          store.dispatch(LoadProjectsAction());
         },
         builder: (context, projects) {
           return Container(

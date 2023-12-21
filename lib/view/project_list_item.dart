@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meditation_maker/model/project.dart';
+import 'package:meditation_maker/redux/project_list_redux.dart';
+import 'package:meditation_maker/redux/redux_store.dart';
 
 class ProjectListItem extends StatelessWidget {
   final Project project;
@@ -11,7 +13,11 @@ class ProjectListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final joinedInputs = project.inputs.join(" ");
+    String joinedInputs = project.inputs.join(" ");
+
+    if (joinedInputs.isEmpty) {
+      joinedInputs = "No inputs";
+    }
 
     return Card(
       child: Padding(
@@ -26,6 +32,13 @@ class ProjectListItem extends StatelessWidget {
               ),
             ),
             Row(children: [
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  store.dispatch(DeleteProjectAction(project: project));
+                },
+              ),
+              const SizedBox(width: 4),
               IconButton(
                 icon: const Icon(Icons.edit),
                 onPressed: () {},

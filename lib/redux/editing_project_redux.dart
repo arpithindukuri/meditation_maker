@@ -1,20 +1,31 @@
 import 'package:redux/redux.dart';
 import 'package:meditation_maker/model/project.dart';
 
-sealed class Action {}
+sealed class EditProjectAction {}
 
-class AddInputAction extends Action {}
+class AddInputAction extends EditProjectAction {}
 
-class RemoveInputAction extends Action {
+class RemoveInputAction extends EditProjectAction {
   final int index;
 
   RemoveInputAction(this.index);
 }
 
+class SetEditingProjectAction extends EditProjectAction {
+  final Project? project;
+
+  SetEditingProjectAction({this.project});
+}
+
 final editingProjectReducer = combineReducers<Project?>([
+  TypedReducer<Project?, SetEditingProjectAction>(_setEditingProject).call,
   TypedReducer<Project?, AddInputAction>(_addInput).call,
   TypedReducer<Project?, RemoveInputAction>(_removeInput).call,
 ]);
+
+Project? _setEditingProject(Project? state, SetEditingProjectAction action) {
+  return action.project;
+}
 
 Project? _addInput(Project? state, AddInputAction action) {
   if (state == null) return null;

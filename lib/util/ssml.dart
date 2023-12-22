@@ -4,18 +4,17 @@ String inputsToSSML(List<Input> list) {
   String ssml = '<speak>\n';
 
   for (Input item in list) {
-    if (item.type == InputType.speak) {
-      String? itemText = (item as SpeakInput).text;
-
-      if (itemText != null) {
+    switch (item.type) {
+      case InputType.speak:
+        String? itemText = (item as SpeakInput).text;
         ssml += '$itemText.trim()\n';
-      }
-    } else if (item.type == InputType.pause) {
-      num? itemDelay = (item as PauseInput).delayMS;
-
-      if (itemDelay != null) {
+        break;
+      case InputType.pause:
+        num? itemDelay = (item as PauseInput).delayMS;
         ssml += '<break time="$itemDelay"/>\n';
-      }
+        break;
+      default:
+        break;
     }
   }
 

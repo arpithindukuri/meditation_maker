@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:meditation_maker/model/project.dart';
+import 'package:meditation_maker/redux/nav_redux.dart';
 import 'package:meditation_maker/redux/project_list_redux.dart';
 import 'package:meditation_maker/redux/redux_store.dart';
 
-class ProjectListItem extends StatelessWidget {
+class ProjectListItemCard extends StatelessWidget {
   final Project project;
 
-  const ProjectListItem({
+  const ProjectListItemCard({
     super.key,
     required this.project,
   });
@@ -16,7 +17,7 @@ class ProjectListItem extends StatelessWidget {
     String joinedInputs = project.inputs.join(" ");
 
     if (joinedInputs.isEmpty) {
-      joinedInputs = "No inputs";
+      joinedInputs = "Empty";
     }
 
     return Card(
@@ -41,7 +42,9 @@ class ProjectListItem extends StatelessWidget {
               const SizedBox(width: 4),
               IconButton(
                 icon: const Icon(Icons.edit),
-                onPressed: () {},
+                onPressed: () {
+                  store.dispatch(NavToProjectEditorAction(project: project));
+                },
               ),
               const SizedBox(width: 4),
               IconButton(

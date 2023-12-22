@@ -4,7 +4,7 @@ import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/model/project.dart';
 import 'package:meditation_maker/redux/project_list_redux.dart';
 
-import 'project_list_item.dart';
+import 'project_list_item_card.dart';
 
 class ProjectList extends StatefulWidget {
   const ProjectList({super.key});
@@ -29,7 +29,7 @@ class ProjectListState extends State<ProjectList> {
               itemCount: projects.length,
               itemBuilder: (context, index) {
                 final project = projects[index];
-                return ProjectListItem(project: project);
+                return ProjectListItemCard(project: project);
               },
             ),
           );

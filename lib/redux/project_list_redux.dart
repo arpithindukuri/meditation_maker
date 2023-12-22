@@ -69,9 +69,10 @@ void _loadProjectsMiddleware(
       if (project != null) {
         projects.add(project);
       } else {
-        projects.add(Project(
-            name: 'ERROR: File is not a Project JSON at path: "${file.path}"',
-            inputs: []));
+        continue;
+        // projects.add(Project(
+        //     name: 'ERROR: File is not a Project JSON at path: "${file.path}"',
+        //     inputs: []));
       }
     }
   }
@@ -147,3 +148,5 @@ void _deleteProjectMiddleware(
 // List<Project> _deleteProject(List<Project> state, DeleteProjectAction action) {
 //   return state;
 // }
+ 
+

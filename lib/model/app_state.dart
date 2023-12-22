@@ -3,7 +3,7 @@ import 'package:meditation_maker/model/project.dart';
 
 enum AppScreen {
   projectList,
-  editingProject,
+  projectEditor,
 }
 
 class AppState {

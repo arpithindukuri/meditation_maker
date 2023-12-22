@@ -7,14 +7,14 @@ import 'package:meditation_maker/util/custom_audio_source.dart';
 import 'package:meditation_maker/model/project.dart';
 import 'package:just_audio/just_audio.dart';
 
-class AudioEditor extends StatefulWidget {
-  const AudioEditor({super.key});
+class ProjectEditor extends StatefulWidget {
+  const ProjectEditor({super.key});
 
   @override
-  State<AudioEditor> createState() => _AudioEditorState();
+  State<ProjectEditor> createState() => _ProjectEditorState();
 }
 
-class _AudioEditorState extends State<AudioEditor> {
+class _ProjectEditorState extends State<ProjectEditor> {
   List<TextEditingController> controllers = [];
 
   late SynthesizeSpeechResponse ttsResponse;

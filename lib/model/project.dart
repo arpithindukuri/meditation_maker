@@ -97,7 +97,12 @@ class Project {
 
   List<Input> inputs;
 
-  Project({required this.name, this.inputs = const []});
+  String datetimeCreatedISO = DateTime.now().toIso8601String();
+
+  Project(
+      {required this.name, this.inputs = const [], String? datetimeCreatedISO})
+      : datetimeCreatedISO =
+            datetimeCreatedISO ?? DateTime.now().toIso8601String();
 
   String toSSMLString() {
     return inputsToSSML(inputs);
@@ -142,8 +147,6 @@ class Project {
         return mapResult;
       })),
     );
-
-    print('project: $project');
 
     return project;
   }

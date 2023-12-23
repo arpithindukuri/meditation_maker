@@ -22,9 +22,11 @@ class ProjectListItemCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Row(
           children: [
+            const Icon(Icons.play_arrow),
+            const SizedBox(width: 8),
             Expanded(
               child: ListTile(
                 title: Text(project.name),
@@ -32,26 +34,23 @@ class ProjectListItemCard extends StatelessWidget {
                     maxLines: 1, overflow: TextOverflow.ellipsis),
               ),
             ),
-            Row(children: [
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  store.dispatch(DeleteProjectAction(project: project));
-                },
-              ),
-              const SizedBox(width: 4),
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  store.dispatch(NavToProjectEditorAction(project: project));
-                },
-              ),
-              const SizedBox(width: 4),
-              IconButton(
-                icon: const Icon(Icons.play_arrow),
-                onPressed: () {},
-              ),
-            ])
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    store.dispatch(DeleteProjectAction(project: project));
+                  },
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    store.dispatch(NavToProjectEditorAction(project: project));
+                  },
+                ),
+              ],
+            )
           ],
         ),
       ),

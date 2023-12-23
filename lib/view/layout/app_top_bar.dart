@@ -4,6 +4,8 @@ import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/redux/nav_redux.dart';
 import 'package:redux/redux.dart';
 
+const double toolbarHeight = 90;
+
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   const AppTopBar({super.key});
 
@@ -16,7 +18,10 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
             icon: const Icon(Icons.settings),
           ),
           const SizedBox(width: 12),
-          const Text("Meditation Maker"),
+          Text(
+            "Meditation Maker",
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
         ];
       case AppScreen.projectEditor:
         return [
@@ -47,13 +52,26 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         converter: (store) => store,
         builder: (context, store) {
           return AppBar(
-            title: Row(
-              children: _getChildren(context, store),
+            scrolledUnderElevation: 0,
+            toolbarHeight: toolbarHeight,
+            flexibleSpace: Container(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              alignment: Alignment.bottomLeft,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: _getChildren(context, store),
+              ),
+            ),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
             ),
           );
         });
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(toolbarHeight);
 }

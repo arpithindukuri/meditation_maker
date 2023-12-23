@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AppPlayerBar extends StatelessWidget {
-  const AppPlayerBar({
+class AppAudioBar extends StatelessWidget {
+  const AppAudioBar({
     super.key,
   });
 
@@ -9,7 +9,7 @@ class AppPlayerBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
-      notchMargin: 4.0,
+      notchMargin: 8,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,

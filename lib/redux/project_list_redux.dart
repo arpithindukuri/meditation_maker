@@ -115,7 +115,7 @@ void _createProjectMiddleware(
 
   final file = File('$localPath/$newProjName.json');
 
-  final newProject = Project(name: newProjName);
+  final newProject = Project(name: newProjName, inputs: defaultInputs);
 
   await file.writeAsString(newProject.toJsonString());
 

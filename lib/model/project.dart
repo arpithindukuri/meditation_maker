@@ -24,6 +24,9 @@ abstract class Input {
   String toJsonString();
 
   Input? fromJsonString(String jsonString);
+
+  @override
+  String toString();
 }
 
 class SpeakInput extends Input {
@@ -57,6 +60,11 @@ class SpeakInput extends Input {
       return null;
     }
   }
+
+  @override
+  String toString() {
+    return 'SpeakInput{type: $type, text: $text}';
+  }
 }
 
 class PauseInput extends Input {
@@ -89,6 +97,11 @@ class PauseInput extends Input {
     } catch (e) {
       return null;
     }
+  }
+
+  @override
+  String toString() {
+    return 'PauseInput{type: $type, delayMS: $delayMS}';
   }
 }
 
@@ -132,14 +145,20 @@ class Project {
 
     final project = Project(
       name: json['name'],
-      inputs: List<Input>.of(jsonInputs.map<Input>((input) {
+      inputs: List<Input>.of(jsonInputs.map<Input>((inputMap) {
         Input mapResult =
             SpeakInput(text: "ERROR: Invalid input in project file");
 
-        if (input['type'] == InputType.speak.name) {
-          input = SpeakInput().fromJson(input);
-        } else if (input['type'] == InputType.pause.name) {
-          input = PauseInput().fromJson(input);
+        if (inputMap['type'] == InputType.speak.name) {
+          final res = SpeakInput().fromJson(inputMap);
+          if (res != null) {
+            mapResult = res;
+          }
+        } else if (inputMap['type'] == InputType.pause.name) {
+          final res = PauseInput().fromJson(inputMap);
+          if (res != null) {
+            mapResult = res;
+          }
         } else {
           throw Exception('Invalid input type');
         }
@@ -161,5 +180,19 @@ class Project {
     } catch (e) {
       return null;
     }
+  }
+
+  @override
+  String toString() {
+    String inputsString = '';
+    for (Input input in this.inputs) {
+      inputsString += '$input,\n';
+    }
+    return '''Project{\n
+                name: $name,\n
+                inputs: [\n
+                  $inputsString\n
+                ]\n
+              }''';
   }
 }

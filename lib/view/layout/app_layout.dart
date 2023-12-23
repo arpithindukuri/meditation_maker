@@ -5,7 +5,7 @@ import 'package:meditation_maker/redux/project_list_redux.dart';
 import 'package:meditation_maker/redux/redux_store.dart';
 import 'package:meditation_maker/view/layout/app_body.dart';
 
-import 'app_player_bar.dart';
+import 'app_audio_bar.dart';
 import 'app_top_bar.dart';
 
 // https://coolors.co/754668-587d71-4daa57-b5dda4-f9eccc
@@ -83,7 +83,7 @@ class AppLayout extends StatelessWidget {
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
-          bottomNavigationBar: const AppPlayerBar(),
+          bottomNavigationBar: const AppAudioBar(),
         ),
       ),
     );

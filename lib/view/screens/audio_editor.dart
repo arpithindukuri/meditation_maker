@@ -2,10 +2,14 @@ import 'dart:convert';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:googleapis/texttospeech/v1.dart';
+import 'package:meditation_maker/model/app_state.dart';
+import 'package:meditation_maker/redux/editing_project_redux.dart';
 import 'package:meditation_maker/util/custom_audio_source.dart';
 import 'package:meditation_maker/model/project.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:redux/redux.dart';
 
 class ProjectEditor extends StatefulWidget {
   const ProjectEditor({super.key});
@@ -21,13 +25,10 @@ class _ProjectEditorState extends State<ProjectEditor> {
 
   final player = AudioPlayer();
 
-  late Project project;
+  void _initState(Store<AppState> store) {
+    Project? project = store.state.editingProject;
 
-  @override
-  void initState() {
-    super.initState();
-
-    project = Project(name: "Proj. 1", inputs: defaultInputs);
+    if (project == null) return;
 
     // init controllers
     controllers = List.generate(project.inputs.length, (index) {
@@ -42,24 +43,26 @@ class _ProjectEditorState extends State<ProjectEditor> {
       }
     });
 
+    // add listeners and set controller state
     for (TextEditingController controller in controllers) {
       controller.addListener(() {
         final input = project.inputs[controllers.indexOf(controller)];
         if (input is SpeakInput) {
-          setState(() {
-            project.inputs[controllers.indexOf(controller)] =
-                SpeakInput(text: controller.text);
-          });
+          store.dispatch(UpdateInputAction(
+              index: controllers.indexOf(controller),
+              input: SpeakInput(text: controller.text)));
+          // setState(() {
+          //   project.inputs[controllers.indexOf(controller)] =
+          //       SpeakInput(text: controller.text);
+          // });
         }
       });
     }
   }
 
-  Future<void> getTTSAudio() async {
+  Future<void> getTTSAudio(String ssml) async {
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('synthesize');
-
-    final ssml = project.toSSMLString();
 
     final response = await callable(<String, dynamic>{'ssml': ssml});
 
@@ -73,8 +76,8 @@ class _ProjectEditorState extends State<ProjectEditor> {
     });
   }
 
-  Future<void> playAudio() async {
-    await getTTSAudio();
+  Future<void> playAudio(Project project) async {
+    await getTTSAudio(project.toSSMLString());
 
     //await writeFile();
 
@@ -109,44 +112,34 @@ class _ProjectEditorState extends State<ProjectEditor> {
   Widget build(BuildContext context) {
     // TODO: Project project = ref.watch(projectProvider);
 
-    return Scaffold(
-      floatingActionButton: Row(
-        children: [
-          FloatingActionButton(
-            onPressed: playAudio,
-            child: const Icon(Icons.play_arrow),
-          ),
-          FloatingActionButton(
-            onPressed: stopAudio,
-            child: const Icon(Icons.stop),
-          ),
-          FloatingActionButton(
-            onPressed: addInput,
-            child: const Icon(Icons.add),
-          ),
-        ],
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: List.generate(
-              project.inputs.length,
-              (index) => Row(children: [
-                    Expanded(
-                      child: TextField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+    return StoreConnector<AppState, Project?>(
+        onInit: (store) => _initState(store),
+        converter: (store) => store.state.editingProject,
+        builder: (context, editingProject) {
+          if (editingProject == null) {
+            return const Center(child: Text("No project selected"));
+          }
+          return Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: List.generate(
+                  editingProject.inputs.length,
+                  (index) => Row(children: [
+                        Expanded(
+                          child: TextField(
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                            ),
+                            controller: controllers[index],
+                          ),
                         ),
-                        controller: controllers[index],
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () => removeInput(index),
-                    ),
-                  ])),
-        ),
-      ),
-    );
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => removeInput(index),
+                        ),
+                      ])),
+            ),
+          );
+        });
   }
 }

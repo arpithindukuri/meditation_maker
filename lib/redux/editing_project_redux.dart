@@ -3,24 +3,32 @@ import 'package:meditation_maker/model/project.dart';
 
 sealed class EditProjectAction {}
 
-class AddInputAction extends EditProjectAction {}
-
-class RemoveInputAction extends EditProjectAction {
-  final int index;
-
-  RemoveInputAction(this.index);
-}
-
 class SetEditingProjectAction extends EditProjectAction {
   final Project? project;
 
   SetEditingProjectAction({this.project});
 }
 
+class AddInputAction extends EditProjectAction {}
+
+class RemoveInputAction extends EditProjectAction {
+  final int index;
+
+  RemoveInputAction({required this.index});
+}
+
+class UpdateInputAction extends EditProjectAction {
+  final int index;
+  final Input input;
+
+  UpdateInputAction({required this.index, required this.input});
+}
+
 final editingProjectReducer = combineReducers<Project?>([
   TypedReducer<Project?, SetEditingProjectAction>(_setEditingProject).call,
   TypedReducer<Project?, AddInputAction>(_addInput).call,
   TypedReducer<Project?, RemoveInputAction>(_removeInput).call,
+  TypedReducer<Project?, UpdateInputAction>(_updateInput).call,
 ]);
 
 Project? _setEditingProject(Project? state, SetEditingProjectAction action) {
@@ -40,4 +48,18 @@ Project? _removeInput(Project? state, RemoveInputAction action) {
     ...state.inputs.sublist(0, action.index),
     ...state.inputs.sublist(action.index + 1)
   ]);
+}
+
+Project? _updateInput(Project? state, UpdateInputAction action) {
+  if (state == null) return null;
+
+  print('newInput: ${action.input}');
+
+  return state.copyWith(
+    inputs: [
+      ...state.inputs.sublist(0, action.index),
+      action.input,
+      ...state.inputs.sublist(action.index + 1)
+    ],
+  );
 }

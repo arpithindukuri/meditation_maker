@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:meditation_maker/model/app_state.dart';
-import 'package:meditation_maker/view/screens/audio_editor/audio_editor.dart';
+import 'package:meditation_maker/view/screens/project_editor/project_editor.dart';
 import 'package:meditation_maker/view/screens/project_list/project_list.dart';
 
 class AppBody extends StatelessWidget {

@@ -11,12 +11,14 @@ class AppState {
   List<Project> projectList;
   Project? editingProject;
   AudioPlayerState? playingAudio;
+  bool isBodyLoading;
 
   AppState({
     this.currentScreen = AppScreen.projectList,
     this.projectList = const [],
     this.editingProject,
     this.playingAudio,
+    this.isBodyLoading = false,
   });
 
   AppState copyWith({

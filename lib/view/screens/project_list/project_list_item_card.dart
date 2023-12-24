@@ -35,7 +35,7 @@ class ProjectListItemCard extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-              icon: const Icon(Icons.play_arrow),
+              icon: const Icon(Icons.play_arrow_rounded),
               onPressed: () {},
             ),
             Expanded(
@@ -48,7 +48,7 @@ class ProjectListItemCard extends StatelessWidget {
             Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.more_vert),
+                  icon: const Icon(Icons.more_vert_rounded),
                   onPressed: () {
                     store.dispatch(
                       DeleteProjectAction(project: project),
@@ -57,7 +57,7 @@ class ProjectListItemCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 IconButton(
-                  icon: const Icon(Icons.edit),
+                  icon: const Icon(Icons.edit_rounded),
                   onPressed: () {
                     store.dispatch(
                       NavToProjectEditorAction(

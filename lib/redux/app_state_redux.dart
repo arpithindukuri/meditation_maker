@@ -10,6 +10,7 @@ AppState appReducer(AppState state, action) {
     projectList: projectListReducer(state.projectList, action),
     editingProject: editingProjectReducer(state.editingProject, action),
     playingAudio: null,
+    isBodyLoading: appLoadingReducer(state.isBodyLoading, action),
   );
 }
 

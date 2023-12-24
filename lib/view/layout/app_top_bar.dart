@@ -15,7 +15,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         return [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.settings_rounded),
           ),
           const SizedBox(width: 12),
           Text(
@@ -29,7 +29,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
             onPressed: () {
               store.dispatch(NavToProjectListAction(context: context));
             },
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back_rounded),
           ),
           const SizedBox(width: 12),
           Text(
@@ -41,7 +41,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         return [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.error),
+            icon: const Icon(Icons.error_rounded),
           ),
           const SizedBox(width: 12),
           const Text("Error: Please restart app"),

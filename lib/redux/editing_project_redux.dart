@@ -53,8 +53,6 @@ Project? _removeInput(Project? state, RemoveInputAction action) {
 Project? _updateInput(Project? state, UpdateInputAction action) {
   if (state == null) return null;
 
-  print('newInput: ${action.input}');
-
   return state.copyWith(
     inputs: [
       ...state.inputs.sublist(0, action.index),

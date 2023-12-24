@@ -16,7 +16,7 @@ class AppLayout extends StatelessWidget {
 
   Scaffold _getRoute(AppScreen routeScreen) {
     return Scaffold(
-      extendBody: true,
+      // extendBody: true,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: const AppTopBar(),
       bottomNavigationBar: const AppAudioBar(),

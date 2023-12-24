@@ -18,6 +18,7 @@ A mobile app to create guided meditation audios from text.
   - [2. Flutter](#2-flutter)
 - [Run Locally](#run-locally)
   - [1. Run Flutter App (Android Emulator).](#1-run-flutter-app-android-emulator)
+    - [Troubleshooting:](#troubleshooting)
     - [Run Web Version (DEPRECATED)](#run-web-version-deprecated)
   - [2. Run Firebase Emulator](#2-run-firebase-emulator)
     - [Persist FireStore State](#persist-firestore-state)
@@ -43,7 +44,7 @@ A mobile app to create guided meditation audios from text.
 
    2. In `task.json`, set `"command": "flutter emulators --launch Galaxy_S21_Ultra_API_30"`.
 
-2. Set `.vscode/launch.json` configuration's `deviceId`.
+2. Set running emulator's device ID in `.vscode/launch.json` configuration.
 
    1. Run `flutter emulators --launch Galaxy_S21_Ultra_API_30` to start the emulator.
 
@@ -59,9 +60,17 @@ A mobile app to create guided meditation audios from text.
 
 1. If you haven't done do, complete the setup as described above.
 
-2. Start the flutter app using `Ctrl`+`F5`.
+2. Start the flutter app using `ctrl`+`f5`.
 
-   1. NOTE: If the wrong configuration runs, you might need to open the "Run and Debug" pane (`ctrl`+`shift`+`d`), select the `meditation_maker emulator debug` configuration in the dropdown, and then start it.
+### Troubleshooting:
+
+- If errors when running that says no running emulator with `deviceID` was found:
+
+  - Wait until the emulator has loaded, and run `ctrl`+`f5` again.
+
+- If the wrong configuration runs:
+
+  - Open the "Run and Debug" pane (`ctrl`+`shift`+`d`), select the `meditation_maker emulator debug` configuration in the dropdown, and then start it.
 
 ### Run Web Version (DEPRECATED)
 
@@ -69,7 +78,7 @@ Not used anymore.
 
 1. Select the "Edge" device in VSCode. (`ctrl`+`shift`+`p` -> "Flutter: Select Device").
 
-2. Start the flutter app using `Ctrl`+`F5`.
+2. Start the flutter app using `ctrl`+`f5`.
 
    1. Didn't do much research, so not sure which of these two commands this runs.
 

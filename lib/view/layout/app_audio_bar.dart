@@ -8,34 +8,37 @@ class AppAudioBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      height: toolbarHeight,
-      shape: const AutomaticNotchedShape(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
+    return Padding(
+      padding: MediaQuery.of(context).viewInsets,
+      child: BottomAppBar(
+        height: toolbarHeight,
+        shape: const AutomaticNotchedShape(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+          ),
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
         ),
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.stop_rounded),
+              onPressed: () {},
+            ),
+            const SizedBox(width: 10),
+            IconButton(
+              icon: const Icon(Icons.play_arrow_rounded),
+              onPressed: () {},
+            ),
+          ],
         ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.stop),
-            onPressed: () {},
-          ),
-          const SizedBox(width: 10),
-          IconButton(
-            icon: const Icon(Icons.play_arrow),
-            onPressed: () {},
-          ),
-        ],
       ),
     );
   }

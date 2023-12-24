@@ -187,7 +187,7 @@ class Project {
   @override
   String toString() {
     String inputsString = '';
-    for (Input input in this.inputs) {
+    for (Input input in inputs) {
       inputsString += '$input,\n';
     }
     return '''Project{\n

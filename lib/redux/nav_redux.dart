@@ -4,6 +4,20 @@ import 'package:meditation_maker/model/project.dart';
 import 'package:meditation_maker/redux/editing_project_redux.dart';
 import 'package:redux/redux.dart';
 
+class AppLoadingAction {
+  final bool isLoading;
+
+  AppLoadingAction({required this.isLoading});
+}
+
+final appLoadingReducer = combineReducers<bool>([
+  TypedReducer<bool, AppLoadingAction>(_appLoading).call,
+]);
+
+bool _appLoading(bool state, AppLoadingAction action) {
+  return action.isLoading;
+}
+
 sealed class NavAction {
   final BuildContext context;
   final AppScreen newScreen;

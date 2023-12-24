@@ -1,22 +1,25 @@
+import 'package:flutter/material.dart';
 import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/model/project.dart';
 import 'package:meditation_maker/redux/editing_project_redux.dart';
 import 'package:redux/redux.dart';
 
 sealed class NavAction {
+  final BuildContext context;
   final AppScreen newScreen;
 
-  NavAction({required this.newScreen});
+  NavAction({required this.newScreen, required this.context});
 }
 
 class NavToProjectListAction extends NavAction {
-  NavToProjectListAction() : super(newScreen: AppScreen.projectList);
+  NavToProjectListAction({required super.context})
+      : super(newScreen: AppScreen.projectList);
 }
 
 class NavToProjectEditorAction extends NavAction {
   final Project? project;
 
-  NavToProjectEditorAction({this.project})
+  NavToProjectEditorAction({required super.context, this.project})
       : super(newScreen: AppScreen.projectEditor);
 }
 
@@ -24,8 +27,8 @@ final List<
         dynamic Function(Store<AppState>, dynamic, dynamic Function(dynamic))>
     currentScreenMiddleware = [
   TypedMiddleware<AppState, NavToProjectEditorAction>(
-          _navToProjectEditorMiddleware)
-      .call,
+    _navToProjectEditorMiddleware,
+  ).call,
 ];
 
 void _navToProjectEditorMiddleware(
@@ -41,10 +44,14 @@ final currentScreenReducer = combineReducers<AppScreen>([
 ]);
 
 AppScreen _navToProjectList(AppScreen state, NavToProjectListAction action) {
+  Navigator.pushNamed(action.context, '/${action.newScreen.name}');
+
   return action.newScreen;
 }
 
 AppScreen _navToProjectEditor(
     AppScreen? state, NavToProjectEditorAction action) {
+  Navigator.pushNamed(action.context, '/${action.newScreen.name}');
+
   return action.newScreen;
 }

@@ -35,8 +35,9 @@ MaterialColor createMaterialColor(Color color) {
 
 final appThemeDataLight = ThemeData(
   primarySwatch: AppColors.primaryDark,
-  scaffoldBackgroundColor: AppColors.primaryDark[50],
+  scaffoldBackgroundColor: AppColors.primaryLight,
 );
+
 final appThemeDataDark = ThemeData(
   brightness: Brightness.dark,
   primarySwatch: AppColors.primaryDark,

@@ -27,12 +27,15 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         return [
           IconButton(
             onPressed: () {
-              store.dispatch(NavToProjectListAction());
+              store.dispatch(NavToProjectListAction(context: context));
             },
             icon: const Icon(Icons.arrow_back),
           ),
           const SizedBox(width: 12),
-          Text('Editing: ${store.state.editingProject?.name}'),
+          Text(
+            'Editing: ${store.state.editingProject?.name}',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
         ];
       default:
         return [
@@ -52,6 +55,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         converter: (store) => store,
         builder: (context, store) {
           return AppBar(
+            automaticallyImplyLeading: false,
             scrolledUnderElevation: 0,
             toolbarHeight: toolbarHeight,
             flexibleSpace: Container(

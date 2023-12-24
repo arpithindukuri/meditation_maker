@@ -31,8 +31,10 @@ abstract class Input {
 
 class SpeakInput extends Input {
   String text;
+  num? delayBetweenLinesMS;
 
-  SpeakInput({this.text = ""}) : super(type: InputType.speak);
+  SpeakInput({this.text = "", this.delayBetweenLinesMS})
+      : super(type: InputType.speak);
 
   @override
   Map<String, dynamic> toJson() {

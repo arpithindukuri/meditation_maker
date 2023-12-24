@@ -14,7 +14,16 @@ class ProjectListItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String joinedInputs = project.inputs.join(" ");
+    String joinedInputs = project.inputs
+        .map((input) {
+          if (input is SpeakInput) {
+            return input.text;
+          } else {
+            return null;
+          }
+        })
+        .toList()
+        .join(" ");
 
     if (joinedInputs.isEmpty) {
       joinedInputs = "Empty";
@@ -25,28 +34,37 @@ class ProjectListItemCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Row(
           children: [
-            const Icon(Icons.play_arrow),
-            const SizedBox(width: 8),
+            IconButton(
+              icon: const Icon(Icons.play_arrow),
+              onPressed: () {},
+            ),
             Expanded(
               child: ListTile(
                 title: Text(project.name),
                 subtitle: Text(joinedInputs,
-                    maxLines: 1, overflow: TextOverflow.ellipsis),
+                    maxLines: 2, overflow: TextOverflow.ellipsis),
               ),
             ),
             Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.delete),
+                  icon: const Icon(Icons.more_vert),
                   onPressed: () {
-                    store.dispatch(DeleteProjectAction(project: project));
+                    store.dispatch(
+                      DeleteProjectAction(project: project),
+                    );
                   },
                 ),
                 const SizedBox(width: 8),
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () {
-                    store.dispatch(NavToProjectEditorAction(project: project));
+                    store.dispatch(
+                      NavToProjectEditorAction(
+                        context: context,
+                        project: project,
+                      ),
+                    );
                   },
                 ),
               ],

@@ -57,13 +57,11 @@ A mobile app to create guided meditation audios from text.
 
 ## 1. Run Flutter App (Android Emulator).
 
-1. Follow setup instructions as listed above.
+1. If you haven't done do, complete the setup as described above.
 
 2. Start the flutter app using `Ctrl`+`F5`.
 
-   1. Ensure you have completed setup procedure as described above.
-
-   2. NOTE: If the wrong configuration runs, you might need to open the "Run and Debug" pane (`ctrl`+`shift`+`d`), select the `meditation_maker emulator debug` configuration in the dropdown, and then start it.
+   1. NOTE: If the wrong configuration runs, you might need to open the "Run and Debug" pane (`ctrl`+`shift`+`d`), select the `meditation_maker emulator debug` configuration in the dropdown, and then start it.
 
 ### Run Web Version (DEPRECATED)
 

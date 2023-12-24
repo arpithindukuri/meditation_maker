@@ -113,33 +113,100 @@ class _ProjectEditorState extends State<ProjectEditor> {
     // TODO: Project project = ref.watch(projectProvider);
 
     return StoreConnector<AppState, Project?>(
-        onInit: (store) => _initState(store),
-        converter: (store) => store.state.editingProject,
-        builder: (context, editingProject) {
-          if (editingProject == null) {
-            return const Center(child: Text("No project selected"));
-          }
-          return Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: List.generate(
-                  editingProject.inputs.length,
-                  (index) => Row(children: [
-                        Expanded(
-                          child: TextField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                            ),
-                            controller: controllers[index],
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () => removeInput(index),
-                        ),
-                      ])),
+      onInit: (store) => _initState(store),
+      converter: (store) => store.state.editingProject,
+      builder: (context, editingProject) {
+        if (editingProject == null) {
+          return const Center(child: Text("No project selected"));
+        }
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: List.generate(
+              editingProject.inputs.length,
+              (index) => SpeakInputCard(
+                input: editingProject.inputs[index],
+                inputIndex: index,
+              ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
+  }
+}
+
+class SpeakInputCard extends StatefulWidget {
+  final Input input;
+  final int inputIndex;
+
+  const SpeakInputCard({super.key, required this.input, required this.inputIndex});
+
+  @override
+  State<SpeakInputCard> createState() => _SpeakInputCardState();
+}
+
+class _SpeakInputCardState extends State<SpeakInputCard> {
+  late TextEditingController controller;
+
+  void _initState(Store<AppState> store) {
+    // init controller
+    if (widget.input.type == InputType.speak) {
+      SpeakInput input = widget.input as SpeakInput;
+      controller = TextEditingController(text: input.text);
+    } else if (widget.input.type == InputType.pause) {
+      PauseInput input = widget.input as PauseInput;
+      controller = TextEditingController(text: input.delayMS.toString());
+    } else {
+      controller = TextEditingController(text: "ERROR: Unknown input type");
+    }
+
+    // add listener and dispatch action
+      controller.addListener(() {
+        if (widget.input is SpeakInput) {
+          store.dispatch(UpdateInputAction(
+              index: widget.inputIndex,
+              input: SpeakInput(text: controller.text),),);
+        }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.input.type.toString(),
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => {},
+                  icon: const Icon(Icons.delete),
+                ),
+              ],
+            ),
+            if (widget.input.type == InputType.speak)
+              TextField(
+                controller: TextEditingController(
+                    text: (widget.input as SpeakInput).text),
+                onChanged: (text) => {},
+              ),
+            if (widget.input.type == InputType.pause)
+              TextField(
+                controller: TextEditingController(
+                    text: (widget.input as PauseInput).delayMS.toString()),
+                onChanged: (text) => {},
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }

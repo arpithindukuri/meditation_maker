@@ -12,6 +12,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:redux/redux.dart';
 
 import 'speak_input_card.dart';
+import 'pause_input_card.dart';
 
 class ProjectEditor extends StatefulWidget {
   const ProjectEditor({super.key});
@@ -124,17 +125,27 @@ class _ProjectEditorState extends State<ProjectEditor> {
         return ListView.separated(
           padding: const EdgeInsets.all(24),
           itemCount: editingProject.inputs.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 5),
-          itemBuilder: (context, index) => Column(
-            children: [
-              SpeakInputCard(
-                input: editingProject.inputs[index],
-                inputIndex: index,
+          separatorBuilder: (context, index) => const SizedBox(height: 16),
+          itemBuilder: (context, index) {
+            final input = editingProject.inputs[index];
+
+            return Column(children: [
+              if (input.type == InputType.speak)
+                SpeakInputCard(
+                  input: input as SpeakInput,
+                  inputIndex: index,
+                ),
+              if (input.type == InputType.pause)
+                PauseInputCard(
+                  input: input as PauseInput,
+                  inputIndex: index,
+                ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.add_rounded),
               ),
-              if (index == editingProject.inputs.length - 1)
-                const SizedBox(height: 24),
-            ],
-          ),
+            ]);
+          },
         );
       },
     );

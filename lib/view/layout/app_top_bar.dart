@@ -62,7 +62,8 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         builder: (context, store) {
           return AppBar(
             automaticallyImplyLeading: false,
-            // scrolledUnderElevation: 12,
+            scrolledUnderElevation: 12,
+            // elevation: 12,
             toolbarHeight: toolbarHeight,
             leadingWidth: toolbarHeight/1.3,
             // flexibleSpace: Container(

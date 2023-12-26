@@ -33,7 +33,7 @@ class AppLayout extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        themeMode: ThemeMode.dark,
+        // themeMode: ThemeMode.dark,
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
         initialRoute: '/${AppScreen.projectList.name}',

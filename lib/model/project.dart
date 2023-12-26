@@ -4,8 +4,10 @@ import 'package:meditation_maker/util/ssml.dart';
 
 List<Input> defaultInputs = [
   SpeakInput(text: '111'),
+  PauseInput(delayMS: 1000),
   SpeakInput(text: '222'),
   SpeakInput(text: '333'),
+  PauseInput(delayMS: 3000),
   SpeakInput(text: '444'),
   SpeakInput(text: '555'),
 ];

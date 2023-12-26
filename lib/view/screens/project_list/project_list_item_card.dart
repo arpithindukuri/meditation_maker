@@ -3,6 +3,7 @@ import 'package:meditation_maker/model/project.dart';
 import 'package:meditation_maker/redux/nav_redux.dart';
 import 'package:meditation_maker/redux/project_list_redux.dart';
 import 'package:meditation_maker/redux/redux_store.dart';
+import 'package:meditation_maker/view/layout/app_theme.dart';
 
 class ProjectListItemCard extends StatelessWidget {
   final Project project;

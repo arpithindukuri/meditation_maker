@@ -1,54 +1,104 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 
-// https://coolors.co/493548-4b4e6d-6a8d92-80b192-a1e887
-// https://coolors.co/3d293d-4b4e6d-6a8d92-b3d0be-a1e887
-const rawColors = ["#3D293D", "#4B4E6D", "#6A8D92", "#B3D0BE", "#A1E887"];
-final rawColorInts =
-    rawColors.map((c) => int.parse('FF${c.substring(1)}', radix: 16)).toList();
-
 class AppColors {
-  static final primaryDark = createMaterialColor(Color(rawColorInts[0]));
-  static final secondaryDark = createMaterialColor(Color(rawColorInts[1]));
-  static final primaryLight = createMaterialColor(Color(rawColorInts[3]));
-  static final secondaryLight = createMaterialColor(Color(rawColorInts[2]));
+  // https://coolors.co/493548-4b4e6d-6a8d92-80b192-a1e887
+  // https://coolors.co/3d293d-4b4e6d-6a8d92-b3d0be-a1e887
+  static const rawColors = [
+    "#7C64C4",
+    "#F3F0F9",
+    "#6688CC",
+    "#243B4C",
+    "#A1E887",
+  ];
+
+  static final rawColorInts = rawColors
+      .map((c) => int.parse('FF${c.substring(1)}', radix: 16))
+      .toList();
+
+  static final primaryLight = generateMaterialColor(Color(rawColorInts[0]));
+  static final secondaryLight = generateMaterialColor(Color(rawColorInts[1]));
+  static final primaryDark = generateMaterialColor(Color(rawColorInts[2]));
+  static final secondaryDark = generateMaterialColor(Color(rawColorInts[3]));
+
+  static MaterialColor generateMaterialColor(Color color) {
+    return MaterialColor(color.value, {
+      50: tintColor(color, 0.95),
+      100: tintColor(color, 0.8),
+      200: tintColor(color, 0.6),
+      300: tintColor(color, 0.4),
+      400: tintColor(color, 0.2),
+      500: color,
+      600: shadeColor(color, 0.1),
+      700: shadeColor(color, 0.25),
+      800: shadeColor(color, 0.45),
+      900: saturateColor(shadeColor(color, 0.5), 0.7),
+    });
+  }
+
+  static int tintValue(int value, double factor) =>
+      max(0, min((value + ((255 - value) * factor)).round(), 255));
+
+  static Color tintColor(Color color, double factor) => Color.fromRGBO(
+      tintValue(color.red, factor),
+      tintValue(color.green, factor),
+      tintValue(color.blue, factor),
+      1);
+
+  static int shadeValue(int value, double factor) =>
+      max(0, min(value - (value * factor).round(), 255));
+
+  static Color shadeColor(Color color, double factor) => Color.fromRGBO(
+      shadeValue(color.red, factor),
+      shadeValue(color.green, factor),
+      shadeValue(color.blue, factor),
+      1);
+
+  static Color saturateColor(Color color, double saturation) {
+    final hsl = HSLColor.fromColor(color);
+    print(hsl);
+    final hslWithSat = hsl.withSaturation(hsl.saturation * saturation);
+    print(hslWithSat);
+    final result = hslWithSat.toColor();
+    print(result);
+    return result;
+  }
 }
 
-MaterialColor createMaterialColor(Color color) {
-  List strengths = <double>[.05];
-  final swatch = <int, Color>{};
-  final int r = color.red, g = color.green, b = color.blue;
+class AppTheme {
+  static final light = ThemeData(
+    colorScheme: ColorScheme.light(
+      primary: AppColors.primaryLight,
+      secondary: AppColors.secondaryLight,
+    ),
+    // scaffoldBackgroundColor: AppColors.primaryLight,
+  );
 
-  for (int i = 1; i < 10; i++) {
-    strengths.add(0.1 * i);
-  }
-  for (final strength in strengths) {
-    final double ds = 0.5 - strength;
-    swatch[(strength * 1000).round()] = Color.fromRGBO(
-      r + ((ds < 0 ? r : (255 - r)) * ds).round(),
-      g + ((ds < 0 ? g : (255 - g)) * ds).round(),
-      b + ((ds < 0 ? b : (255 - b)) * ds).round(),
-      1,
-    );
-  }
-  return MaterialColor(color.value, swatch);
+  static final dark = ThemeData(
+    primaryColor: AppColors.primaryDark,
+    colorScheme: ColorScheme.dark(
+      brightness: Brightness.dark,
+      primary: AppColors.primaryDark,
+      secondary: AppColors.secondaryDark,
+      onSecondary: AppColors.secondaryDark.shade50,
+      background: AppColors.secondaryDark.shade800,
+      surface: AppColors.secondaryDark.shade800,
+      onSurface: AppColors.secondaryDark.shade50,
+    ),
+    // textTheme: TextTheme(
+    //   headlineSmall: TextStyle(
+    //     color: AppColors.secondaryDark.shade200,
+    //   ),
+    // ),
+    // scaffoldBackgroundColor: AppColors.primaryDark,
+    bottomAppBarTheme: BottomAppBarTheme(
+      color: AppColors.secondaryDark.shade900,
+      surfaceTintColor: AppColors.secondaryDark.shade900,
+    ),
+    appBarTheme: AppBarTheme(
+      foregroundColor: AppColors.secondaryDark.shade100,
+      backgroundColor: AppColors.secondaryDark.shade900,
+      surfaceTintColor: AppColors.secondaryDark.shade900,
+    ),
+  );
 }
-
-final appThemeDataLight = ThemeData(
-  primarySwatch: AppColors.primaryDark,
-  scaffoldBackgroundColor: AppColors.primaryLight,
-);
-
-final appThemeDataDark = ThemeData(
-  brightness: Brightness.dark,
-  primarySwatch: AppColors.primaryDark,
-  scaffoldBackgroundColor: AppColors.primaryDark,
-  bottomAppBarTheme: BottomAppBarTheme(
-    color: AppColors.primaryDark[900],
-    surfaceTintColor: Colors.transparent,
-    padding: const EdgeInsets.all(24),
-  ),
-  appBarTheme: AppBarTheme(
-    color: AppColors.primaryDark[900],
-    surfaceTintColor: Colors.transparent,
-  ),
-);

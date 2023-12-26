@@ -25,8 +25,8 @@ sealed class NavAction {
   NavAction({required this.newScreen, required this.context});
 }
 
-class NavToProjectListAction extends NavAction {
-  NavToProjectListAction({required super.context})
+class NavCloseProjectEditorAction extends NavAction {
+  NavCloseProjectEditorAction({required super.context})
       : super(newScreen: AppScreen.projectList);
 }
 
@@ -53,18 +53,20 @@ void _navToProjectEditorMiddleware(
 }
 
 final currentScreenReducer = combineReducers<AppScreen>([
-  TypedReducer<AppScreen, NavToProjectListAction>(_navToProjectList).call,
   TypedReducer<AppScreen, NavToProjectEditorAction>(_navToProjectEditor).call,
+  TypedReducer<AppScreen, NavCloseProjectEditorAction>(_navExitProjectEditor)
+      .call,
 ]);
 
-AppScreen _navToProjectList(AppScreen state, NavToProjectListAction action) {
-  Navigator.pushNamed(action.context, '/${action.newScreen.name}');
+AppScreen _navExitProjectEditor(
+    AppScreen state, NavCloseProjectEditorAction action) {
+  Navigator.pop(action.context);
 
   return action.newScreen;
 }
 
 AppScreen _navToProjectEditor(
-    AppScreen? state, NavToProjectEditorAction action) {
+    AppScreen state, NavToProjectEditorAction action) {
   Navigator.pushNamed(action.context, '/${action.newScreen.name}');
 
   return action.newScreen;

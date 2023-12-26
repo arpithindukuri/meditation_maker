@@ -15,23 +15,32 @@ class _SortButtonsState extends State<SortButtons> {
   @override
   Widget build(BuildContext context) {
     return SegmentedButton<SortType>(
+      // style: const ButtonStyle(
+      //   visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+      // ),
+      style: TextButton.styleFrom(
+        visualDensity: const VisualDensity(horizontal: 2, vertical: 0),
+        minimumSize: Size.zero,
+        padding: EdgeInsets.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
       showSelectedIcon: false,
       segments: const <ButtonSegment<SortType>>[
         ButtonSegment<SortType>(
           value: SortType.name,
-          label: Text('Day'),
+          label: Text('name'),
         ),
         ButtonSegment<SortType>(
           value: SortType.created,
-          label: Text('Week'),
+          label: Text('created'),
         ),
         ButtonSegment<SortType>(
           value: SortType.modified,
-          label: Text('Month'),
+          label: Text('modified'),
         ),
         ButtonSegment<SortType>(
           value: SortType.played,
-          label: Text('Year'),
+          label: Text('played'),
         ),
       ],
       selected: <SortType>{selectedSortType},

@@ -31,25 +31,25 @@ class ProjectListState extends State<ProjectList> {
             ),
             itemBuilder: (context, index) {
               final project = projects[index];
-                  
+
               if (index == 0) {
                 return Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        const Row(
+                          children: [
+                            Icon(Icons.sort_rounded),
+                            SizedBox(width: 8),
+                            SortButtons(),
+                          ],
+                        ),
                         IconButton.outlined(
                           icon: const Icon(Icons.search_rounded),
                           onPressed: () {
                             // Navigator.pushNamed(context, '/project-editor');
                           },
-                        ),
-                        const Row(
-                          children: [
-                            Text('Filter By: '),
-                            SizedBox(width: 2),
-                            SortButtons(),
-                          ],
                         ),
                       ],
                     ),

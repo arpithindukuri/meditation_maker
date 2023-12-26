@@ -1,4 +1,4 @@
-![](/assets/1_raw_color_and_shape_xs.png)
+![](/assets/images/1_raw_color_and_shape_xs.png)
 
 ### Meditation Maker
 
@@ -64,7 +64,7 @@ A mobile app to create guided meditation audios from text.
 
 ### Troubleshooting:
 
-- If errors when running that says no running emulator with `deviceID` was found:
+- No supported devices found with name or id matching '`deviceId`':
 
   - Wait until the emulator has loaded, and run `ctrl`+`f5` again.
 

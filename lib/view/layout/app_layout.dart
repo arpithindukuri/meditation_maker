@@ -34,8 +34,8 @@ class AppLayout extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         themeMode: ThemeMode.dark,
-        theme: appThemeDataLight,
-        darkTheme: appThemeDataDark,
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
         initialRoute: '/${AppScreen.projectList.name}',
         routes: {
           '/${AppScreen.projectList.name}': (context) =>

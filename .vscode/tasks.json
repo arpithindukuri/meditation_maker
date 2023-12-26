@@ -6,7 +6,7 @@
     {
       "label": "start-emulator",
       "type": "shell",
-      "command": "flutter emulators --launch Galaxy_S21_Ultra_API_30",
+      "command": "flutter emulators --launch Galaxy_S21_Ultra_API_30"
     }
   ]
 }

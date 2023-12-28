@@ -25,7 +25,7 @@ class ProjectListState extends State<ProjectList> {
         },
         builder: (context, projects) {
           return ListView.separated(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(horizontal: 36),
             itemCount: projects.length,
             separatorBuilder: (context, index) => const SizedBox(
               height: 5,
@@ -37,7 +37,7 @@ class ProjectListState extends State<ProjectList> {
                 return Column(
                   children: [
                     const SizedBox(
-                      height: toolbarHeight + 24,
+                      height: toolbarHeight,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

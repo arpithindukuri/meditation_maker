@@ -5,9 +5,9 @@ class AppColors {
   // https://coolors.co/3d293d-4b4e6d-6a8d92-b3d0be-a1e887
   static const rawColors = [
     "#5881B8",
-    "#E0E8F9",
+    "#EDF2F7",
     "#5881B8",
-    "#243B4C",
+    "#394556",
     "#A1E887",
   ];
 
@@ -87,13 +87,14 @@ class AppTheme {
       onPrimary: AppColors.primaryDark.shade50,
       secondary: AppColors.secondaryLight,
       onSecondary: AppColors.secondaryDark.shade600,
+      // background: AppColors.secondaryLight.shade50,
     ),
     appBarTheme: AppBarTheme(
       elevation: 0,
       scrolledUnderElevation: 12,
       foregroundColor: AppColors.primaryLight.shade500,
-      backgroundColor: Colors.white,
-      surfaceTintColor: AppColors.primaryLight.shade900,
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
     ),
     bottomAppBarTheme: BottomAppBarTheme(
       color: AppColors.primaryLight.shade200,
@@ -111,7 +112,7 @@ class AppTheme {
       onPrimary: AppColors.primaryDark.shade900,
       secondary: AppColors.secondaryDark,
       onSecondary: AppColors.secondaryDark.shade300,
-      background: AppColors.secondaryDark.shade800,
+      background: AppColors.secondaryDark.shade900,
       surface: AppColors.secondaryDark.shade900,
       onSurface: AppColors.secondaryDark.shade50,
     ),

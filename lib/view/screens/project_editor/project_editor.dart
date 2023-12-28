@@ -124,14 +124,14 @@ class _ProjectEditorState extends State<ProjectEditor> {
           return const Center(child: Text("No project selected"));
         }
         return ListView.separated(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           itemCount: editingProject.inputs.length,
           separatorBuilder: (context, index) => const SizedBox(height: 16),
           itemBuilder: (context, index) {
             final input = editingProject.inputs[index];
 
             return Column(children: [
-              if (index == 0) const SizedBox(height: toolbarHeight + 25),
+              if (index == 0) const SizedBox(height: toolbarHeight),
               if (input.type == InputType.speak)
                 SpeakInputCard(
                   input: input as SpeakInput,

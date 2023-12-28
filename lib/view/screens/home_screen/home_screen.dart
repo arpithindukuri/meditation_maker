@@ -33,36 +33,39 @@ class HomeScreen extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: SizedBox.expand(
-          child: labelText == "New Project"
-              ? FloatingActionButton.extended(
-                  onPressed: onPressed,
-                  label: Text(labelText),
-                  icon: icon,
-                  isExtended: true,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(1000),
-                  ),
-                  // extendedTextStyle: Theme.of(context).textTheme.bodyLarge,
-                )
-              : isPrimary
-                  ? FilledButton.icon(
-                      onPressed: onPressed,
-                      label: Text(labelText),
-                      icon: icon,
-                      // backgroundColor: Theme.of(context).colorScheme.primary,
-                      // extendedTextStyle: Theme.of(context).textTheme.bodyLarge,
-                    )
-                  : ElevatedButton.icon(
-                      onPressed: onPressed,
-                      label: Text(labelText),
-                      icon: icon,
-                      // backgroundColor: Theme.of(context).colorScheme.secondary,
-                      // foregroundColor:
-                      //     Theme.of(context).colorScheme.onSecondary,
-                      // extendedTextStyle: Theme.of(context).textTheme.bodyLarge,
+            child: labelText == "New Project"
+                ? FloatingActionButton.extended(
+                    onPressed: onPressed,
+                    label: Text(labelText),
+                    icon: icon,
+                    isExtended: true,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(1000),
                     ),
-        ),
+                    // extendedTextStyle: Theme.of(context).textTheme.bodyLarge,
+                  )
+                : Material(
+                    borderRadius: BorderRadius.circular(1000),
+                    elevation: 7,
+                    child: isPrimary
+                        ? FilledButton.icon(
+                            onPressed: onPressed,
+                            label: Text(labelText),
+                            icon: icon,
+                            // backgroundColor: Theme.of(context).colorScheme.primary,
+                            // extendedTextStyle: Theme.of(context).textTheme.bodyLarge,
+                          )
+                        : ElevatedButton.icon(
+                            onPressed: onPressed,
+                            label: Text(labelText),
+                            icon: icon,
+                            // backgroundColor: Theme.of(context).colorScheme.secondary,
+                            // foregroundColor:
+                            //     Theme.of(context).colorScheme.onSecondary,
+                            // extendedTextStyle: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                  )),
       ),
     );
   }
@@ -82,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: toolbarHeight + 25),
+                    const SizedBox(height: toolbarHeight),
                     Text(
                       "Good Morning, Daniel.",
                       style: TextStyle(

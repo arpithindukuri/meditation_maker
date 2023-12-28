@@ -1,10 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/redux/nav_redux.dart';
 import 'package:redux/redux.dart';
 
-const double toolbarHeight = 90;
+const double toolbarHeight = 145;
 
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   const AppTopBar({super.key});
@@ -38,8 +40,6 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget _getTitle(BuildContext context, Store<AppState> store) {
-    final style = Theme.of(context).textTheme.headlineSmall;
-
     switch (store.state.currentScreen) {
       case AppScreen.homeScreen:
         return const Text(
@@ -54,9 +54,8 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
           '${store.state.editingProject?.name}',
         );
       default:
-        return Text(
+        return const Text(
           "ERROR: Please restart app.",
-          style: style,
         );
     }
   }
@@ -66,47 +65,79 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
     return StoreConnector<AppState, Store<AppState>>(
         converter: (store) => store,
         builder: (context, store) {
-          return AppBar(
-            foregroundColor: Theme.of(context).colorScheme.onSecondary,
-            centerTitle: true,
-            automaticallyImplyLeading: false,
-            // scrolledUnderElevation: 35,
-            // elevation: 2,
-            toolbarHeight: toolbarHeight,
-            leadingWidth: toolbarHeight / 1.3,
-            // flexibleSpace: Container(
-            //   padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-            //   alignment: Alignment.bottomLeft,
-            //   child: Row(
-            //     crossAxisAlignment: CrossAxisAlignment.center,
-            //     children: _getChildren(context, store),
-            //   ),
-            // ),
-            leading: Container(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                child: _getLeading(context, store)),
-            titleSpacing: 0,
-            title: _getTitle(context, store),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(28),
-                bottomRight: Radius.circular(28),
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
+            height: toolbarHeight,
+            child: AppBar(
+              primary: false,
+              automaticallyImplyLeading: false,
+              toolbarHeight: toolbarHeight,
+              leadingWidth: toolbarHeight / 1.3,
+              foregroundColor: Theme.of(context).colorScheme.onSecondary.withOpacity(0.7),
+              centerTitle: true,
+              titleTextStyle: TextStyle(
+                fontSize: Theme.of(context).textTheme.titleLarge!.fontSize!,
+                fontWeight: FontWeight.w400,
+                color: Theme.of(context).colorScheme.onSecondary.withOpacity(0.7),
               ),
-            ),
-
-            actions: [
-              SizedBox(
-                width: toolbarHeight / 1.3,
-                height: double.infinity,
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.settings_rounded),
+              // scrolledUnderElevation: 35,
+              // elevation: 2,
+              flexibleSpace: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(28),
+                ),
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .secondary
+                              .withOpacity(0.8),
+                          width: 2,
+                        ),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .secondary
+                            .withOpacity(0.35),
+                        borderRadius: BorderRadius.circular(28),
+                        // boxShadow: [
+                        //   BoxShadow(
+                        //     blurRadius: 2,
+                        //     color: Colors.white.withOpacity(0.45),
+                        //     offset: const Offset(0, 4),
+                        //   ),
+                        // ],
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ],
+              leading: Container(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  child: _getLeading(context, store)),
+              titleSpacing: 0,
+              title: _getTitle(context, store),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(28)),
+              ),
+              actions: [
+                SizedBox(
+                  width: toolbarHeight / 1.3,
+                  height: double.infinity,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.settings_rounded),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         });
   }

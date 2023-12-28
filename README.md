@@ -1,4 +1,4 @@
-![](/assets/images/1_raw_color_and_shape_xs.png)
+![](/assets/images/2_icon_nobg_256.png)
 
 ### Meditation Maker
 

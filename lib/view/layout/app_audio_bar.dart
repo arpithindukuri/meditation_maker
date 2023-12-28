@@ -19,9 +19,9 @@ class AppAudioBar extends StatelessWidget {
               topRight: Radius.circular(24),
             ),
           ),
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-          ),
+          // RoundedRectangleBorder(
+          //   borderRadius: BorderRadius.all(Radius.circular(20)),
+          // ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.max,

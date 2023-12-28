@@ -4,9 +4,9 @@ class AppColors {
   // https://coolors.co/493548-4b4e6d-6a8d92-80b192-a1e887
   // https://coolors.co/3d293d-4b4e6d-6a8d92-b3d0be-a1e887
   static const rawColors = [
-    "#7C64C4",
-    "#F3F0F9",
-    "#6688CC",
+    "#5881B8",
+    "#E0E8F9",
+    "#5881B8",
     "#243B4C",
     "#A1E887",
   ];
@@ -34,15 +34,15 @@ class AppColors {
     //   900: shadeColor(color, 0.5),
     // });
     return MaterialColor(color.value, {
-      50: getShade(color, 0.92),
-      100: getShade(color, 0.85),
-      200: getShade(color, 0.78),
-      300: getShade(color, 0.65),
-      400: getShade(color, 0.50),
-      500: getShade(color, 0.40),
-      600: getShade(color, 0.30),
-      700: getShade(color, 0.20),
-      800: getShade(color, 0.10),
+      50: getShade(color, 0.95),
+      100: getShade(color, 0.88),
+      200: getShade(color, 0.80),
+      300: getShade(color, 0.72),
+      400: getShade(color, 0.65),
+      500: getShade(color, 0.50),
+      600: getShade(color, 0.40),
+      700: getShade(color, 0.30),
+      800: getShade(color, 0.20),
       900: getShade(color, 0.10),
     });
   }
@@ -65,9 +65,8 @@ class AppColors {
   //     shadeValue(color.blue, factor),
   //     1);
 
-  static Color getShade(Color color, double lightness) => HSLColor.fromColor(color)
-      .withLightness(lightness)
-      .toColor();
+  static Color getShade(Color color, double lightness) =>
+      HSLColor.fromColor(color).withLightness(lightness).toColor();
 
   // static Color saturateColor(Color color, double saturation) {
   //   final hsl = HSLColor.fromColor(color);
@@ -82,9 +81,23 @@ class AppColors {
 
 class AppTheme {
   static final light = ThemeData(
+    useMaterial3: true,
     colorScheme: ColorScheme.light(
       primary: AppColors.primaryLight,
+      onPrimary: AppColors.primaryDark.shade50,
       secondary: AppColors.secondaryLight,
+      onSecondary: AppColors.secondaryDark.shade600,
+    ),
+    appBarTheme: AppBarTheme(
+      elevation: 0,
+      scrolledUnderElevation: 12,
+      foregroundColor: AppColors.primaryLight.shade500,
+      backgroundColor: Colors.white,
+      surfaceTintColor: AppColors.primaryLight.shade900,
+    ),
+    bottomAppBarTheme: BottomAppBarTheme(
+      color: AppColors.primaryLight.shade200,
+      surfaceTintColor: AppColors.primaryLight.shade900,
     ),
     // scaffoldBackgroundColor: AppColors.primaryLight,
   );
@@ -95,8 +108,9 @@ class AppTheme {
     colorScheme: ColorScheme.dark(
       brightness: Brightness.dark,
       primary: AppColors.primaryDark,
+      onPrimary: AppColors.primaryDark.shade900,
       secondary: AppColors.secondaryDark,
-      onSecondary: AppColors.secondaryDark.shade50,
+      onSecondary: AppColors.secondaryDark.shade300,
       background: AppColors.secondaryDark.shade800,
       surface: AppColors.secondaryDark.shade900,
       onSurface: AppColors.secondaryDark.shade50,
@@ -113,8 +127,8 @@ class AppTheme {
     ),
     appBarTheme: AppBarTheme(
       foregroundColor: AppColors.secondaryDark.shade100,
-      backgroundColor: AppColors.secondaryDark.shade800,
-      surfaceTintColor: AppColors.secondaryDark.shade900,
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: AppColors.secondaryDark.shade50,
     ),
   );
 }

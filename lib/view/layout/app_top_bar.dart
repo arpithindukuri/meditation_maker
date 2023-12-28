@@ -11,16 +11,20 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _getLeading(BuildContext context, Store<AppState> store) {
     switch (store.state.currentScreen) {
+      case AppScreen.homeScreen:
+        return Image.asset('assets/images/2_icon_nobg.png');
       case AppScreen.projectList:
         return IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.settings_rounded),
+          onPressed: () {
+            store.dispatch(NavExitProjectListAction(context: context));
+          },
+          icon: const Icon(Icons.arrow_back_rounded),
         );
       case AppScreen.projectEditor:
         // return null;
         return IconButton(
           onPressed: () {
-            store.dispatch(NavCloseProjectEditorAction(context: context));
+            store.dispatch(NavExitProjectEditorAction(context: context));
           },
           icon: const Icon(Icons.arrow_back_rounded),
         );
@@ -37,15 +41,17 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
     final style = Theme.of(context).textTheme.headlineSmall;
 
     switch (store.state.currentScreen) {
-      case AppScreen.projectList:
-        return Text(
+      case AppScreen.homeScreen:
+        return const Text(
           "Meditation Maker",
-          // style: style,
+        );
+      case AppScreen.projectList:
+        return const Text(
+          "My Projects",
         );
       case AppScreen.projectEditor:
         return Text(
           '${store.state.editingProject?.name}',
-          style: style,
         );
       default:
         return Text(
@@ -61,11 +67,13 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         converter: (store) => store,
         builder: (context, store) {
           return AppBar(
+            foregroundColor: Theme.of(context).colorScheme.onSecondary,
+            centerTitle: true,
             automaticallyImplyLeading: false,
-            scrolledUnderElevation: 12,
-            // elevation: 12,
+            // scrolledUnderElevation: 35,
+            // elevation: 2,
             toolbarHeight: toolbarHeight,
-            leadingWidth: toolbarHeight/1.3,
+            leadingWidth: toolbarHeight / 1.3,
             // flexibleSpace: Container(
             //   padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
             //   alignment: Alignment.bottomLeft,
@@ -77,7 +85,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
             leading: Container(
                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
                 child: _getLeading(context, store)),
-                titleSpacing: 0,
+            titleSpacing: 0,
             title: _getTitle(context, store),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -85,6 +93,20 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                 bottomRight: Radius.circular(28),
               ),
             ),
+
+            actions: [
+              SizedBox(
+                width: toolbarHeight / 1.3,
+                height: double.infinity,
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.settings_rounded),
+                  ),
+                ),
+              ),
+            ],
           );
         });
   }

@@ -3,6 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/model/project.dart';
 import 'package:meditation_maker/redux/project_list_redux.dart';
+import 'package:meditation_maker/view/layout/app_top_bar.dart';
 
 import 'project_list_item_card.dart';
 import 'sort_buttons.dart';
@@ -35,6 +36,9 @@ class ProjectListState extends State<ProjectList> {
               if (index == 0) {
                 return Column(
                   children: [
+                    const SizedBox(
+                      height: toolbarHeight + 24,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

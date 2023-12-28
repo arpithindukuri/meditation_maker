@@ -4,11 +4,15 @@ import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/view/screens/project_editor/project_editor.dart';
 import 'package:meditation_maker/view/screens/project_list/project_list.dart';
 
+import '../screens/home_screen/home_screen.dart';
+
 class AppBody extends StatelessWidget {
   final AppScreen routeScreen;
 
   Widget _getChild() {
     switch (routeScreen) {
+      case AppScreen.homeScreen:
+        return const HomeScreen();
       case AppScreen.projectList:
         return const ProjectList();
       case AppScreen.projectEditor:

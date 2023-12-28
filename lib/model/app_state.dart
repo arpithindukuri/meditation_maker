@@ -2,6 +2,7 @@ import 'package:meditation_maker/model/audio_player_state.dart';
 import 'package:meditation_maker/model/project.dart';
 
 enum AppScreen {
+  homeScreen,
   projectList,
   projectEditor,
 }
@@ -14,7 +15,7 @@ class AppState {
   bool isBodyLoading;
 
   AppState({
-    this.currentScreen = AppScreen.projectList,
+    this.currentScreen = AppScreen.homeScreen,
     this.projectList = const [],
     this.editingProject,
     this.playingAudio,

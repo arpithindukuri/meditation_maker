@@ -9,6 +9,7 @@ import 'package:meditation_maker/redux/editing_project_redux.dart';
 import 'package:meditation_maker/util/custom_audio_source.dart';
 import 'package:meditation_maker/model/project.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:meditation_maker/view/layout/app_top_bar.dart';
 import 'package:redux/redux.dart';
 
 import 'speak_input_card.dart';
@@ -130,6 +131,7 @@ class _ProjectEditorState extends State<ProjectEditor> {
             final input = editingProject.inputs[index];
 
             return Column(children: [
+              if (index == 0) const SizedBox(height: toolbarHeight + 25),
               if (input.type == InputType.speak)
                 SpeakInputCard(
                   input: input as SpeakInput,

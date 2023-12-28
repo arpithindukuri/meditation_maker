@@ -16,11 +16,13 @@ class AppLayout extends StatelessWidget {
 
   Scaffold _getRoute(AppScreen routeScreen) {
     return Scaffold(
-      // extendBody: true,
+      extendBodyBehindAppBar: true,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: const AppTopBar(),
       bottomNavigationBar: const AppAudioBar(),
-      floatingActionButton: AppFloatingButton(routeScreen),
+      floatingActionButton: routeScreen == AppScreen.homeScreen
+          ? null
+          : AppFloatingButton(routeScreen),
       body: AppBody(routeScreen),
     );
   }
@@ -36,8 +38,10 @@ class AppLayout extends StatelessWidget {
         // themeMode: ThemeMode.dark,
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
-        initialRoute: '/${AppScreen.projectList.name}',
+        initialRoute: '/${AppScreen.homeScreen.name}',
         routes: {
+          '/${AppScreen.homeScreen.name}': (context) =>
+              _getRoute(AppScreen.homeScreen),
           '/${AppScreen.projectList.name}': (context) =>
               _getRoute(AppScreen.projectList),
           '/${AppScreen.projectEditor.name}': (context) =>

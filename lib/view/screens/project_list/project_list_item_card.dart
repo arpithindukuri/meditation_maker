@@ -33,6 +33,7 @@ class ProjectListItemCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Row(
+          // crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             IconButton(
               icon: const Icon(Icons.play_arrow_rounded),

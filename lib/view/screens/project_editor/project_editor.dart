@@ -131,7 +131,7 @@ class _ProjectEditorState extends State<ProjectEditor> {
             final input = editingProject.inputs[index];
 
             return Column(children: [
-              if (index == 0) const SizedBox(height: toolbarHeight),
+              if (index == 0) const SizedBox(height: appbarHeight),
               if (input.type == InputType.speak)
                 SpeakInputCard(
                   input: input as SpeakInput,

@@ -28,17 +28,18 @@ class ProjectListState extends State<ProjectList> {
             padding: const EdgeInsets.symmetric(horizontal: 36),
             itemCount: projects.length,
             separatorBuilder: (context, index) => const SizedBox(
-              height: 5,
+              height: 12,
             ),
             itemBuilder: (context, index) {
               final project = projects[index];
 
-              if (index == 0) {
-                return Column(
-                  children: [
+              return Column(
+                children: [
+                  if (index == 0)
                     const SizedBox(
-                      height: toolbarHeight,
+                      height: appbarHeight,
                     ),
+                  if (index == 0)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -57,20 +58,11 @@ class ProjectListState extends State<ProjectList> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
-                    ProjectListItemCard(project: project),
-                  ],
-                );
-              } else if (index == projects.length - 1) {
-                return Column(
-                  children: [
-                    ProjectListItemCard(project: project),
-                    const SizedBox(height: 24),
-                  ],
-                );
-              } else {
-                return ProjectListItemCard(project: project);
-              }
+                  if (index == 0) const SizedBox(height: 24),
+                  ProjectListItemCard(project: project),
+                  if (index == projects.length - 1) const SizedBox(height: 24),
+                ],
+              );
             },
           );
         });

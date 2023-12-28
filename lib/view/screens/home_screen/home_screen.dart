@@ -81,13 +81,13 @@ class HomeScreen extends StatelessWidget {
               ..._getHero(Theme.of(context).brightness == Brightness.dark),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 36, vertical: 36),
+                    const EdgeInsets.symmetric(horizontal: 42),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: toolbarHeight),
+                    const SizedBox(height: appbarHeight),
                     Text(
-                      "Good Morning, Daniel.",
+                      "Good Morning, Daniel",
                       style: TextStyle(
                         fontSize:
                             Theme.of(context).textTheme.displaySmall!.fontSize!,

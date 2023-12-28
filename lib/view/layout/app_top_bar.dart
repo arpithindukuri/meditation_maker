@@ -6,7 +6,7 @@ import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/redux/nav_redux.dart';
 import 'package:redux/redux.dart';
 
-const double toolbarHeight = 145;
+const double appbarHeight = 145;
 
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   const AppTopBar({super.key});
@@ -67,12 +67,14 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         builder: (context, store) {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
-            height: toolbarHeight,
+            height: appbarHeight,
             child: AppBar(
               primary: false,
               automaticallyImplyLeading: false,
-              toolbarHeight: toolbarHeight,
-              leadingWidth: toolbarHeight / 1.3,
+              toolbarHeight: appbarHeight,
+              leadingWidth: appbarHeight / 1.3,
+              elevation: 0,
+              scrolledUnderElevation: 0,
               foregroundColor: Theme.of(context).colorScheme.onSecondary.withOpacity(0.7),
               centerTitle: true,
               titleTextStyle: TextStyle(
@@ -126,7 +128,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               actions: [
                 SizedBox(
-                  width: toolbarHeight / 1.3,
+                  width: appbarHeight / 1.3,
                   height: double.infinity,
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
@@ -143,5 +145,5 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(toolbarHeight);
+  Size get preferredSize => const Size.fromHeight(appbarHeight);
 }

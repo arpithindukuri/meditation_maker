@@ -28,7 +28,11 @@ class AppBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppScreen>(
       converter: (store) => store.state.currentScreen,
-      builder: (context, currentScreen) => _getChild(),
+      builder: (context, currentScreen) => Container(
+        padding: EdgeInsets.fromViewPadding(
+            View.of(context).viewInsets, View.of(context).devicePixelRatio),
+        child: _getChild(),
+      ),
     );
   }
 }

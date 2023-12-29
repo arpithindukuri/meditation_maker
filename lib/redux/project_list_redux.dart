@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:meditation_maker/model/app_state.dart';
+import 'package:meditation_maker/model/input.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:redux/redux.dart';
 import 'package:meditation_maker/model/project.dart';
@@ -17,16 +18,16 @@ class SetProjectsAction extends ProjectListAction {
 
 class CreateProjectAction extends ProjectListAction {}
 
+class UpdateProjectAction extends ProjectListAction {
+  final Project project;
+
+  UpdateProjectAction({required this.project});
+}
+
 class DeleteProjectAction extends ProjectListAction {
   final Project project;
 
   DeleteProjectAction({required this.project});
-}
-
-class SaveProjectAction extends ProjectListAction {
-  final Project project;
-
-  SaveProjectAction({required this.project});
 }
 
 final List<
@@ -34,25 +35,9 @@ final List<
     projectListMiddleware = [
   TypedMiddleware<AppState, LoadProjectsAction>(_loadProjectsMiddleware).call,
   TypedMiddleware<AppState, CreateProjectAction>(_createProjectMiddleware).call,
+  TypedMiddleware<AppState, UpdateProjectAction>(_updateProjectMiddleware).call,
   TypedMiddleware<AppState, DeleteProjectAction>(_deleteProjectMiddleware).call,
 ];
-
-final projectListReducer = combineReducers<List<Project>>([
-  // TypedReducer<List<Project>, LoadProjectsAction>(_loadProjects).call,
-  TypedReducer<List<Project>, SetProjectsAction>(_setProjects).call,
-  // TypedReducer<List<Project>, CreateProjectAction>(_createProject).call,
-  // TypedReducer<List<Project>, DeleteProjectAction>(_deleteProject).call,
-]);
-
-// List<Project> _loadProjects(List<Project>? state, LoadProjectsAction action) {
-//   if (state == null) return [];
-
-//   return state;
-// }
-
-List<Project> _setProjects(List<Project>? state, SetProjectsAction action) {
-  return action.projects;
-}
 
 void _loadProjectsMiddleware(
     Store<AppState> state, LoadProjectsAction action, next) async {
@@ -124,9 +109,22 @@ void _createProjectMiddleware(
   next(action);
 }
 
-// List<Project> _createProject(List<Project> state, CreateProjectAction action) {
-//   return state;
-// }
+void _updateProjectMiddleware(
+    Store<AppState> state, UpdateProjectAction action, next) async {
+  final localDir = await getApplicationDocumentsDirectory();
+
+  final localPath = localDir.path;
+
+  final projName = action.project.name;
+
+  final file = File('$localPath/$projName.json');
+
+  await file.writeAsString(action.project.toJsonString());
+
+  state.dispatch(LoadProjectsAction());
+
+  next(action);
+}
 
 void _deleteProjectMiddleware(
     Store<AppState> state, DeleteProjectAction action, next) async {
@@ -145,8 +143,10 @@ void _deleteProjectMiddleware(
   next(action);
 }
 
-// List<Project> _deleteProject(List<Project> state, DeleteProjectAction action) {
-//   return state;
-// }
- 
+final projectListReducer = combineReducers<List<Project>>([
+  TypedReducer<List<Project>, SetProjectsAction>(_setProjects).call,
+]);
 
+List<Project> _setProjects(List<Project>? state, SetProjectsAction action) {
+  return action.projects;
+}

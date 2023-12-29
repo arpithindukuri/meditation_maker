@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meditation_maker/model/input.dart';
 import 'package:meditation_maker/model/project.dart';
 import 'package:meditation_maker/redux/nav_redux.dart';
 import 'package:meditation_maker/redux/project_list_redux.dart';
@@ -15,6 +16,7 @@ class ProjectListItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String joinedInputs = project.inputs
+        .where((el) => el.type == InputType.speak)
         .map((input) {
           if (input is SpeakInput) {
             return input.text;
@@ -41,6 +43,11 @@ class ProjectListItemCard extends StatelessWidget {
             ),
             Expanded(
               child: ListTile(
+                titleTextStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSecondary,
+                  fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize,
+                  fontWeight: FontWeight.w500,
+                ),
                 title: Text(project.name),
                 subtitle: Text(joinedInputs,
                     maxLines: 2, overflow: TextOverflow.ellipsis),

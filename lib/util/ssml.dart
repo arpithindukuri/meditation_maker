@@ -1,4 +1,4 @@
-import 'package:meditation_maker/model/project.dart';
+import 'package:meditation_maker/model/input.dart';
 
 String inputsToSSML(List<Input> list) {
   String ssml = '<speak>\n';

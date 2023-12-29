@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:googleapis/texttospeech/v1.dart';
 import 'package:meditation_maker/model/app_state.dart';
+import 'package:meditation_maker/model/input.dart';
 import 'package:meditation_maker/redux/editing_project_redux.dart';
 import 'package:meditation_maker/util/custom_audio_source.dart';
 import 'package:meditation_maker/model/project.dart';
@@ -28,41 +29,6 @@ class _ProjectEditorState extends State<ProjectEditor> {
   late SynthesizeSpeechResponse ttsResponse;
 
   final player = AudioPlayer();
-
-  void _initState(Store<AppState> store) {
-    Project? project = store.state.editingProject;
-
-    if (project == null) return;
-
-    // init controllers
-    controllers = List.generate(project.inputs.length, (index) {
-      if (project.inputs[index].type == InputType.speak) {
-        SpeakInput input = project.inputs[index] as SpeakInput;
-        return TextEditingController(text: input.text);
-      } else if (project.inputs[index].type == InputType.pause) {
-        PauseInput input = project.inputs[index] as PauseInput;
-        return TextEditingController(text: input.delayMS.toString());
-      } else {
-        return TextEditingController();
-      }
-    });
-
-    // add listeners and set controller state
-    for (TextEditingController controller in controllers) {
-      controller.addListener(() {
-        final input = project.inputs[controllers.indexOf(controller)];
-        if (input is SpeakInput) {
-          store.dispatch(UpdateInputAction(
-              index: controllers.indexOf(controller),
-              input: SpeakInput(text: controller.text)));
-          // setState(() {
-          //   project.inputs[controllers.indexOf(controller)] =
-          //       SpeakInput(text: controller.text);
-          // });
-        }
-      });
-    }
-  }
 
   Future<void> getTTSAudio(String ssml) async {
     HttpsCallable callable =
@@ -116,22 +82,29 @@ class _ProjectEditorState extends State<ProjectEditor> {
   Widget build(BuildContext context) {
     // TODO: Project project = ref.watch(projectProvider);
 
-    return StoreConnector<AppState, Project?>(
-      onInit: (store) => _initState(store),
-      converter: (store) => store.state.editingProject,
-      builder: (context, editingProject) {
-        if (editingProject == null) {
+    return StoreConnector<AppState, Store<AppState>>(
+      converter: (store) => store,
+      builder: (context, store) {
+        if (store.state.editingProject == null) {
           return const Center(child: Text("No project selected"));
+        } else if (store.state.editingProject!.inputs.isEmpty) {
+          return const Column(
+            children: [
+              SizedBox(height: appbarHeight),
+              AddInputButton(index: -1),
+            ],
+          );
         }
         return ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          itemCount: editingProject.inputs.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 36),
+          itemCount: store.state.editingProject?.inputs.length ?? 0,
+          separatorBuilder: (context, index) => const SizedBox(height: 0),
           itemBuilder: (context, index) {
-            final input = editingProject.inputs[index];
+            final input = store.state.editingProject!.inputs[index];
 
             return Column(children: [
-              if (index == 0) const SizedBox(height: appbarHeight),
+              if (index == 0) const SizedBox(height: appbarHeight - 28),
+              if (index == 0) const AddInputButton(index: -1),
               if (input.type == InputType.speak)
                 SpeakInputCard(
                   input: input as SpeakInput,
@@ -142,12 +115,63 @@ class _ProjectEditorState extends State<ProjectEditor> {
                   input: input as PauseInput,
                   inputIndex: index,
                 ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.add_rounded),
-              ),
+              AddInputButton(index: index),
             ]);
           },
+        );
+      },
+    );
+  }
+}
+
+class AddInputButton extends StatelessWidget {
+  final int index;
+
+  const AddInputButton({
+    super.key,
+    required this.index,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return StoreConnector<AppState, Store<AppState>>(
+      converter: (store) => store,
+      builder: (context, store) {
+        if (store.state.editingProject == null) {
+          return const Center(child: Text("No project selected"));
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: MenuAnchor(
+            builder:
+                (BuildContext context, MenuController controller, Widget? child) {
+              return IconButton.filledTonal(
+                tooltip: 'Add input',
+                icon: const Icon(Icons.add_rounded),
+                // color: Theme.of(context).colorScheme.primary,
+                onPressed: () {
+                  if (controller.isOpen) {
+                    controller.close();
+                  } else {
+                    controller.open();
+                  }
+                },
+              );
+            },
+            menuChildren: [
+              MenuItemButton(
+                child: const Text('Speak'),
+                onPressed: () => store.dispatch(
+                    AddInputAction(index: index, type: InputType.speak)),
+              ),
+              MenuItemButton(
+                child: const Text('Pause'),
+                onPressed: () => store.dispatch(
+                    AddInputAction(index: index, type: InputType.pause)),
+              ),
+            ],
+          ),
         );
       },
     );

@@ -53,11 +53,21 @@ final List<
   TypedMiddleware<AppState, NavToProjectEditorAction>(
     _navToProjectEditorMiddleware,
   ).call,
+  TypedMiddleware<AppState, NavExitProjectEditorAction>(
+    _navExitProjectEditorMiddleware,
+  ).call,
 ];
 
 void _navToProjectEditorMiddleware(
     Store<AppState> store, NavToProjectEditorAction action, next) {
   store.dispatch(SetEditingProjectAction(project: action.project));
+
+  next(action);
+}
+
+void _navExitProjectEditorMiddleware(
+    Store<AppState> store, NavExitProjectEditorAction action, next) {
+  store.dispatch(SetEditingProjectAction(project: null));
 
   next(action);
 }

@@ -34,9 +34,9 @@ class AppColors {
     //   900: shadeColor(color, 0.5),
     // });
     return MaterialColor(color.value, {
-      50: getShade(color, 0.95),
-      100: getShade(color, 0.88),
-      200: getShade(color, 0.80),
+      50: getShade(color, 0.99),
+      100: getShade(color, 0.96),
+      200: getShade(color, 0.85),
       300: getShade(color, 0.72),
       400: getShade(color, 0.65),
       500: getShade(color, 0.50),
@@ -84,10 +84,12 @@ class AppTheme {
     useMaterial3: true,
     colorScheme: ColorScheme.light(
       primary: AppColors.primaryLight,
-      onPrimary: AppColors.primaryDark.shade50,
+      onPrimary: AppColors.secondaryLight.shade50,
       secondary: AppColors.secondaryLight,
-      onSecondary: AppColors.secondaryDark.shade600,
-      // background: AppColors.secondaryLight.shade50,
+      onSecondary: AppColors.primaryLight.shade600,
+      background: AppColors.secondaryLight.shade50,
+      surface: AppColors.secondaryLight.shade50,
+      onSurface: AppColors.primaryLight.shade600,
     ),
     appBarTheme: AppBarTheme(
       elevation: 0,
@@ -96,9 +98,16 @@ class AppTheme {
       backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
     ),
-    bottomAppBarTheme: BottomAppBarTheme(
-      color: AppColors.primaryLight.shade200,
-      surfaceTintColor: AppColors.primaryLight.shade900,
+    bottomAppBarTheme: const BottomAppBarTheme(
+      color: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+    ),
+    textTheme: TextTheme(
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: AppColors.primaryLight.shade700,
+      ),
     ),
     // scaffoldBackgroundColor: AppColors.primaryLight,
   );

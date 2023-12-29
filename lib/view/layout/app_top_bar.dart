@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/redux/nav_redux.dart';
+import 'package:meditation_maker/redux/project_list_redux.dart';
 import 'package:redux/redux.dart';
 
 const double appbarHeight = 145;
@@ -60,6 +61,47 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
     }
   }
 
+  List<Widget> _getActions(BuildContext context, Store<AppState> store) {
+    switch (store.state.currentScreen) {
+      case AppScreen.homeScreen || AppScreen.projectList:
+        return [
+          SizedBox(
+            width: appbarHeight / 1.75,
+            height: double.infinity,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+              child: IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.settings_rounded),
+              ),
+            ),
+          ),
+        ];
+      case AppScreen.projectEditor:
+        return [
+          SizedBox(
+            width: appbarHeight / 1.75,
+            height: double.infinity,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+              child: IconButton(
+                onPressed: () {
+                  store.dispatch(
+                    UpdateProjectAction(project: store.state.editingProject!),
+                  );
+
+                  store.dispatch(NavExitProjectEditorAction(context: context));
+                },
+                icon: const Icon(Icons.save_rounded),
+              ),
+            ),
+          ),
+        ];
+      default:
+        return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Store<AppState>>(
@@ -72,15 +114,17 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
               primary: false,
               automaticallyImplyLeading: false,
               toolbarHeight: appbarHeight,
-              leadingWidth: appbarHeight / 1.3,
+              leadingWidth: appbarHeight / 1.75,
               elevation: 0,
               scrolledUnderElevation: 0,
-              foregroundColor: Theme.of(context).colorScheme.onSecondary.withOpacity(0.7),
+              foregroundColor:
+                  Theme.of(context).colorScheme.onSecondary.withOpacity(0.7),
               centerTitle: true,
               titleTextStyle: TextStyle(
                 fontSize: Theme.of(context).textTheme.titleLarge!.fontSize!,
                 fontWeight: FontWeight.w400,
-                color: Theme.of(context).colorScheme.onSecondary.withOpacity(0.7),
+                color:
+                    Theme.of(context).colorScheme.onSecondary.withOpacity(0.7),
               ),
               // scrolledUnderElevation: 35,
               // elevation: 2,
@@ -126,19 +170,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(28)),
               ),
-              actions: [
-                SizedBox(
-                  width: appbarHeight / 1.3,
-                  height: double.infinity,
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.settings_rounded),
-                    ),
-                  ),
-                ),
-              ],
+              actions: _getActions(context, store),
             ),
           );
         });

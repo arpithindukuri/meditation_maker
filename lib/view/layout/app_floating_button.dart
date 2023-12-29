@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:meditation_maker/model/app_state.dart';
-import 'package:meditation_maker/redux/editing_project_redux.dart';
 import 'package:meditation_maker/redux/project_list_redux.dart';
 import 'package:redux/redux.dart';
 
@@ -24,7 +23,7 @@ class AppFloatingButton extends StatelessWidget {
       case AppScreen.projectEditor:
         return FloatingActionButton.extended(
           onPressed: () {
-            store.dispatch(AddInputAction());
+            // store.dispatch(AddInputAction());
           },
           tooltip: 'Add Input',
           label: const Text('Add Input'),

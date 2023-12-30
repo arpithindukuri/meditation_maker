@@ -19,7 +19,7 @@ class ProjectListItemCard extends StatelessWidget {
         .where((el) => el.type == InputType.speak)
         .map((input) {
           if (input is SpeakInput) {
-            return input.text;
+            return input.text.replaceAll("\n", " ");
           } else {
             return null;
           }
@@ -43,11 +43,8 @@ class ProjectListItemCard extends StatelessWidget {
             ),
             Expanded(
               child: ListTile(
-                titleTextStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onSecondary,
-                  fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize,
-                  fontWeight: FontWeight.w500,
-                ),
+                titleTextStyle: Theme.of(context).textTheme.bodyLarge,
+                subtitleTextStyle: Theme.of(context).textTheme.bodyMedium,
                 title: Text(project.name),
                 subtitle: Text(joinedInputs,
                     maxLines: 2, overflow: TextOverflow.ellipsis),

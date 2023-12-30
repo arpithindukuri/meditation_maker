@@ -50,6 +50,7 @@ dependencies:
   flutter_redux: ^0.10.0
   redux: ^5.0.0
   we_slide: ^2.4.0
+  audio_service: ^0.18.12
 
 dev_dependencies:
   flutter_test:

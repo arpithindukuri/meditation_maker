@@ -108,6 +108,53 @@ class AppTheme {
         fontWeight: FontWeight.w500,
         color: AppColors.primaryLight.shade700,
       ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: AppColors.primaryLight.shade700,
+      ),
+    ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.all(
+          AppColors.primaryLight.shade600,
+        ),
+        overlayColor: MaterialStateProperty.all(
+          AppColors.secondaryLight.shade200,
+        ),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100),
+          ),
+        ),
+        side: MaterialStateProperty.all(
+          BorderSide(
+            color: AppColors.primaryLight.shade600,
+            width: 1,
+          ),
+        ),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.all(
+          AppColors.primaryLight.shade600,
+        ),
+        overlayColor: MaterialStateProperty.all(
+          AppColors.secondaryLight.shade200,
+        ),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100),
+          ),
+        ),
+        side: MaterialStateProperty.all(
+          BorderSide(
+            color: AppColors.primaryLight.shade600,
+            width: 1,
+          ),
+        ),
+      ),
     ),
     // scaffoldBackgroundColor: AppColors.primaryLight,
   );

@@ -144,8 +144,8 @@ class AddInputButton extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(16),
           child: MenuAnchor(
-            builder:
-                (BuildContext context, MenuController controller, Widget? child) {
+            builder: (BuildContext context, MenuController controller,
+                Widget? child) {
               return IconButton.filledTonal(
                 tooltip: 'Add input',
                 icon: const Icon(Icons.add_rounded),

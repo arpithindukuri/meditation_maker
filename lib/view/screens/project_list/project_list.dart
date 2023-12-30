@@ -51,10 +51,17 @@ class ProjectListState extends State<ProjectList> {
                           ],
                         ),
                         IconButton.outlined(
+                          style: ButtonStyle(
+                            side: MaterialStateProperty.all(
+                              const BorderSide(
+                                color: Colors.blue,
+                                width: 1.0,
+                                style: BorderStyle.solid,
+                              ),
+                            ),
+                          ),
                           icon: const Icon(Icons.search_rounded),
-                          onPressed: () {
-                            // Navigator.pushNamed(context, '/project-editor');
-                          },
+                          onPressed: () {},
                         ),
                       ],
                     ),

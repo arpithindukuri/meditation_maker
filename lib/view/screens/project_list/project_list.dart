@@ -47,7 +47,7 @@ class ProjectListState extends State<ProjectList> {
                           children: [
                             Icon(Icons.sort_rounded),
                             SizedBox(width: 8),
-                            SortButtons(),
+                            // SortButtons(),
                           ],
                         ),
                         IconButton.outlined(

@@ -7,9 +7,6 @@ import 'package:googleapis/texttospeech/v1.dart';
 import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/model/input.dart';
 import 'package:meditation_maker/redux/editing_project_redux.dart';
-import 'package:meditation_maker/util/custom_audio_source.dart';
-import 'package:meditation_maker/model/project.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:meditation_maker/view/layout/app_top_bar.dart';
 import 'package:redux/redux.dart';
 
@@ -28,38 +25,32 @@ class _ProjectEditorState extends State<ProjectEditor> {
 
   late SynthesizeSpeechResponse ttsResponse;
 
-  final player = AudioPlayer();
-
   Future<void> getTTSAudio(String ssml) async {
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('synthesize');
 
     final response = await callable(<String, dynamic>{'ssml': ssml});
 
-    setState(() {
-      ttsResponse = SynthesizeSpeechResponse.fromJson({
-        "audioContent": String.fromCharCodes(Uint8List.fromList(
-            (jsonDecode(response.data['jsonString'])['audioContent']['data']
-                    as List<dynamic>)
-                .cast<int>()))
-      });
-    });
+    setState(
+      () {
+        ttsResponse = SynthesizeSpeechResponse.fromJson(
+          {
+            "audioContent": String.fromCharCodes(
+              Uint8List.fromList(
+                (jsonDecode(response.data['jsonString'])['audioContent']['data']
+                        as List<dynamic>)
+                    .cast<int>(),
+              ),
+            ),
+          },
+        );
+      },
+    );
   }
 
-  Future<void> playAudio(Project project) async {
-    await getTTSAudio(project.toSSMLString());
+  Future<void> playAudio() async {}
 
-    //await writeFile();
-
-    await player.setAudioSource(
-        CustomAudioSource(ttsResponse.audioContent?.codeUnits ?? []));
-
-    player.play();
-  }
-
-  void stopAudio() async {
-    await player.stop();
-  }
+  void stopAudio() async {}
 
   void addInput() {
     // TODO: ref.read(projectProvider.notifier).addInput();

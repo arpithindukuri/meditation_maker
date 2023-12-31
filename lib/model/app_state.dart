@@ -1,4 +1,4 @@
-import 'package:meditation_maker/model/audio_player_state.dart';
+import 'package:meditation_maker/audio/app_audio_handler.dart';
 import 'package:meditation_maker/model/project.dart';
 
 enum AppScreen {
@@ -11,28 +11,35 @@ class AppState {
   AppScreen currentScreen;
   List<Project> projectList;
   Project? editingProject;
-  AudioPlayerState? playingAudio;
+  AppAudioHandler? audioHandler;
   bool isBodyLoading;
+  String? audioCache;
 
+  // Initial state, loaded by redux in redux_store.dart, initialState: AppState()
   AppState({
     this.currentScreen = AppScreen.homeScreen,
     this.projectList = const [],
     this.editingProject,
-    this.playingAudio,
+    this.audioHandler,
     this.isBodyLoading = false,
+    this.audioCache,
   });
 
   AppState copyWith({
     AppScreen? currentScreen,
     List<Project>? projectList,
     Project? editingProject,
-    AudioPlayerState? playingAudio,
+    AppAudioHandler? audioHandler,
+    bool? isBodyLoading,
+    String? audioCache,
   }) {
     return AppState(
       currentScreen: currentScreen ?? this.currentScreen,
       projectList: projectList ?? this.projectList,
       editingProject: editingProject ?? this.editingProject,
-      playingAudio: playingAudio ?? this.playingAudio,
+      audioHandler: audioHandler ?? this.audioHandler,
+      isBodyLoading: isBodyLoading ?? this.isBodyLoading,
+      audioCache: audioCache ?? this.audioCache,
     );
   }
 }

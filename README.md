@@ -10,8 +10,15 @@ A mobile app to create guided meditation audios from text.
 
 ---
 
+# Todo
+
+- [ ] iOS setup for audio_service package: https://github.com/ryanheise/audio_service/tree/minor/audio_service#ios-setup
+
+---
+
 # Table of Contents
 
+- [Todo](#todo)
 - [Table of Contents](#table-of-contents)
 - [Setup](#setup)
   - [1. Install Tools](#1-install-tools)

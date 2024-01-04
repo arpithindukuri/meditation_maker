@@ -7,9 +7,10 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-// import { onRequest } from "firebase-functions/v2/https";
 // import * as logger from "firebase-functions/logger";
-import * as functions from "firebase-functions";
+// import * as functions from "firebase-functions";
+import { logger } from "firebase-functions";
+import { onCall } from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
 import textToSpeech from "@google-cloud/text-to-speech";
 import { google } from "@google-cloud/text-to-speech/build/protos/protos";
@@ -29,34 +30,47 @@ admin.initializeApp({
 //   response.send("Hello from Firebase!");
 // });
 
-export const synthesize = functions.https.onCall(async (data, context) => {
+export const synthesize = onCall(async (req) => {
   const client = new textToSpeech.TextToSpeechClient({
     projectId: PROJECT_ID,
   });
 
-  const [response] = await client.synthesizeSpeech(
-    {
-      input: { ssml: data.ssml },
-      voice: {
-        languageCode: "en-US",
-        ssmlGender: google.cloud.texttospeech.v1.SsmlVoiceGender.NEUTRAL,
-      },
-      audioConfig: {
-        audioEncoding: google.cloud.texttospeech.v1.AudioEncoding.MP3,
-      },
-    },
-    {
-      otherArgs: {
-        auth: (
-          await admin.credential.applicationDefault().getAccessToken()
-        ).access_token,
-      },
-    }
-  );
+  // logger.info(req);
+  logger.info(req.data.ssml);
+  // logger.info(await admin.credential.applicationDefault().getAccessToken());
 
-  const result = JSON.stringify(response);
+  try {
+    const [response] = await client.synthesizeSpeech(
+      {
+        input: { ssml: req.data.ssml },
+        voice: {
+          languageCode: "en-US",
+          ssmlGender: google.cloud.texttospeech.v1.SsmlVoiceGender.NEUTRAL,
+        },
+        audioConfig: {
+          audioEncoding: google.cloud.texttospeech.v1.AudioEncoding.MP3,
+        },
+      }
+      // {
+      //   otherArgs: {
+      //     auth: (
+      //       await admin.credential.applicationDefault().getAccessToken()
+      //     ).access_token,
+      //   },
+      // }
+    );
 
-  return {
-    jsonString: result,
-  };
+    const result = JSON.stringify(response);
+
+    logger.info(result);
+
+    return {
+      jsonString: result,
+    };
+  } catch (e) {
+    logger.error(e);
+    return {
+      jsonString: "",
+    };
+  }
 });

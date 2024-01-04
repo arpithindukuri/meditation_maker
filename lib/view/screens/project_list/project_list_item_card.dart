@@ -1,6 +1,13 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:meditation_maker/redux/audio_cache_redux.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:meditation_maker/model/input.dart';
 import 'package:meditation_maker/model/project.dart';
+import 'package:meditation_maker/redux/audio_handler_redux.dart';
 import 'package:meditation_maker/redux/nav_redux.dart';
 import 'package:meditation_maker/redux/project_list_redux.dart';
 import 'package:meditation_maker/redux/redux_store.dart';
@@ -39,7 +46,33 @@ class ProjectListItemCard extends StatelessWidget {
           children: [
             IconButton(
               icon: const Icon(Icons.play_arrow_rounded),
-              onPressed: () {},
+              onPressed: () async {
+                store.dispatch(PlayProjectAction(project: project));
+                // String ssml = project.toSSMLString();
+
+                // if (Firebase.apps.isNotEmpty) {
+                //   HttpsCallable callable =
+                //       FirebaseFunctions.instanceFor(region: 'us-central1')
+                //           .httpsCallable('synthesize');
+
+                //   final response =
+                //       await callable(<String, dynamic>{'ssml': ssml});
+                //   final responseMap = jsonDecode(response.data['jsonString']);
+                //   final responseAudioContent =
+                //       responseMap['audioContent']['data'];
+                //   final audioCache = String.fromCharCodes(
+                //     Uint8List.fromList(
+                //       (responseAudioContent as List<dynamic>).cast<int>(),
+                //     ),
+                //   );
+
+                //   store.dispatch(
+                //     SetAudioCacheAction(
+                //       audioCache: audioCache,
+                //     ),
+                //   );
+                // }
+              },
             ),
             Expanded(
               child: ListTile(

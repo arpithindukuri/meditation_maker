@@ -66,7 +66,10 @@ class _SpeakInputCardState extends State<SpeakInputCard> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete_rounded),
-                      onPressed: () => {},
+                      onPressed: () {
+                        store.dispatch(
+                            RemoveInputAction(index: widget.inputIndex));
+                      },
                       // color: Theme.of(context).colorScheme.onSecondary,
                     ),
                   ],

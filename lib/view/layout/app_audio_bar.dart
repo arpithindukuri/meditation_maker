@@ -50,8 +50,42 @@ class AppAudioBar extends StatelessWidget {
                     const SizedBox(width: 10),
                     IconButton(
                       icon: const Icon(Icons.play_arrow_rounded),
-                      onPressed: () {
-                        store.dispatch(PlayAudioAction());
+                      onPressed: () async {
+                        store.dispatch(PlayEditingProjectAction());
+                        // String ssml =
+                        //     '<speak>There was an error synthesizing the audio.</speak>';
+
+                        // // if play editing project, set ssml to editing project's ssml
+                        // final project = store.state.editingProject;
+                        // if (project != null) {
+                        //   ssml = project.toSSMLString();
+                        // }
+
+                        // if (Firebase.apps.isNotEmpty) {
+                        //   HttpsCallable callable =
+                        //       FirebaseFunctions.instanceFor(
+                        //               region: 'us-central1')
+                        //           .httpsCallable('synthesize');
+
+                        //   final response =
+                        //       await callable(<String, dynamic>{'ssml': ssml});
+                        //   final responseMap =
+                        //       jsonDecode(response.data['jsonString']);
+                        //   final responseAudioContent =
+                        //       responseMap['audioContent']['data'];
+                        //   final audioCache = String.fromCharCodes(
+                        //     Uint8List.fromList(
+                        //       (responseAudioContent as List<dynamic>)
+                        //           .cast<int>(),
+                        //     ),
+                        //   );
+
+                        //   store.dispatch(
+                        //     SetAudioCacheAction(
+                        //       audioCache: audioCache,
+                        //     ),
+                        //   );
+                        // }
                       },
                     ),
                   ],

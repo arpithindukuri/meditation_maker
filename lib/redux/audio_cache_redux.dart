@@ -22,7 +22,7 @@ Future<void> _setAudioCacheMiddleware(
   final audioCache = action.audioCache;
 
   if (audioCache != null) {
-    store.state.audioHandler?.setPlayerAudioSource(audioCache);
+    await store.state.audioHandler?.setPlayerAudioSource(audioCache);
   }
 
   next(action);

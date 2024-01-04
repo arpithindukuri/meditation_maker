@@ -1,12 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:meditation_maker/redux/audio_handler_redux.dart';
-import 'package:meditation_maker/view/layout/app_layout.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-
-import 'firebase_options.dart';
-import './redux/redux_store.dart';
+import '../../firebase_options.dart';
+import 'package:meditation_maker/view/layout/app_layout.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,11 +13,11 @@ void main() async {
   //     apiKey: '', appId: '', messagingSenderId: '', projectId: ''));
 
   // if in development environment, use local emulator
-  // if (kDebugMode) {
-  FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
-  // }
-
-  store.dispatch(InitAudioHandlerAction());
+  if (kDebugMode) {
+    FirebaseFunctions.instanceFor(region: 'us-central1')
+        // from PS > (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.AddressState -eq "Preferred"}).IPAddress
+        .useFunctionsEmulator('192.168.1.80', 5001);
+  }
 
   runApp(const AppLayout());
 }

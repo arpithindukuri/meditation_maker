@@ -3,7 +3,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:googleapis/texttospeech/v1.dart';
+// import 'package:googleapis/texttospeech/v1.dart';
 import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/model/input.dart';
 import 'package:meditation_maker/redux/editing_project_redux.dart';
@@ -23,7 +23,7 @@ class ProjectEditor extends StatefulWidget {
 class _ProjectEditorState extends State<ProjectEditor> {
   List<TextEditingController> controllers = [];
 
-  late SynthesizeSpeechResponse ttsResponse;
+  // late SynthesizeSpeechResponse ttsResponse;
 
   Future<void> getTTSAudio(String ssml) async {
     HttpsCallable callable =
@@ -31,21 +31,21 @@ class _ProjectEditorState extends State<ProjectEditor> {
 
     final response = await callable(<String, dynamic>{'ssml': ssml});
 
-    setState(
-      () {
-        ttsResponse = SynthesizeSpeechResponse.fromJson(
-          {
-            "audioContent": String.fromCharCodes(
-              Uint8List.fromList(
-                (jsonDecode(response.data['jsonString'])['audioContent']['data']
-                        as List<dynamic>)
-                    .cast<int>(),
-              ),
-            ),
-          },
-        );
-      },
-    );
+    // setState(
+    //   () {
+    //     ttsResponse = SynthesizeSpeechResponse.fromJson(
+    //       {
+    //         "audioContent": String.fromCharCodes(
+    //           Uint8List.fromList(
+    //             (jsonDecode(response.data['jsonString'])['audioContent']['data']
+    //                     as List<dynamic>)
+    //                 .cast<int>(),
+    //           ),
+    //         ),
+    //       },
+    //     );
+    //   },
+    // );
   }
 
   Future<void> playAudio() async {}

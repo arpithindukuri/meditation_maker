@@ -76,8 +76,11 @@ class _PauseInputCardState extends State<PauseInputCard> {
                             ),
                           ),
                           IconButton(
-                            onPressed: () => {},
                             icon: const Icon(Icons.delete_rounded),
+                            onPressed: () {
+                              store.dispatch(
+                                  RemoveInputAction(index: widget.inputIndex));
+                            },
                             // color: Theme.of(context).colorScheme.onSecondary,
                           ),
                         ],

@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:meditation_maker/view/layout/app_layout.dart';
 
 void main() {
@@ -19,7 +20,7 @@ void main() {
     expect(find.text('1'), findsNothing);
 
     // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add_rounded));
+    await tester.tap(find.byIcon(Icons.add));
     await tester.pump();
 
     // Verify that our counter has incremented.

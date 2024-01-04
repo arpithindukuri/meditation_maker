@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/redux/audio_handler_redux.dart';
@@ -21,21 +22,27 @@ class AppLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreProvider(
       store: store,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        // themeMode: ThemeMode.dark,
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        initialRoute: '/${AppScreen.homeScreen.name}',
-        routes: {
-          '/${AppScreen.homeScreen.name}': (context) =>
-              const ScaffoldRoute(routeScreen: AppScreen.homeScreen),
-          '/${AppScreen.projectList.name}': (context) =>
-              const ScaffoldRoute(routeScreen: AppScreen.projectList),
-          '/${AppScreen.projectEditor.name}': (context) =>
-              const ScaffoldRoute(routeScreen: AppScreen.projectEditor),
+      child: StoreConnector<AppState, Store<AppState>>(
+        converter: (store) => store,
+        onInit: (store) async {
+          store.dispatch(InitAudioHandlerAction());
         },
+        builder: (context, store) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          // themeMode: ThemeMode.dark,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          initialRoute: '/${AppScreen.homeScreen.name}',
+          routes: {
+            '/${AppScreen.homeScreen.name}': (context) =>
+                const ScaffoldRoute(routeScreen: AppScreen.homeScreen),
+            '/${AppScreen.projectList.name}': (context) =>
+                const ScaffoldRoute(routeScreen: AppScreen.projectList),
+            '/${AppScreen.projectEditor.name}': (context) =>
+                const ScaffoldRoute(routeScreen: AppScreen.projectEditor),
+          },
+        ),
       ),
     );
   }
@@ -50,7 +57,7 @@ class ScaffoldRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppScreen>(
       converter: (store) => store.state.currentScreen,
-      onInit: (store) {
+      onInit: (store) async {
         // store.dispatch(InitAudioHandlerAction());
       },
       builder: (context, store) {

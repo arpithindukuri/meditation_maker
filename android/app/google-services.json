@@ -14,7 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "1026081387704-9o90nt19bp2u25c8jrmtq6cac9cnn3ea.apps.googleusercontent.com",
+          "client_id": "1026081387704-jr27rbeeop37eg2a9vrd3sdknc8sicad.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -29,6 +29,13 @@
             {
               "client_id": "1026081387704-9o90nt19bp2u25c8jrmtq6cac9cnn3ea.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1026081387704-6lg9400hpk5mnirftdktcpb6a3a2nbcc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.meditationMaker"
+              }
             }
           ]
         }

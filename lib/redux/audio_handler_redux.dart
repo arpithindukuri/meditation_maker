@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/material.dart';
 import 'package:meditation_maker/audio/app_audio_handler.dart';
 import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/model/project.dart';
@@ -20,10 +22,14 @@ class SetAudioHandlerAction extends AudioAction {
   SetAudioHandlerAction({required this.audioHandler});
 }
 
-class PlayAudioAction extends AudioAction {
-  final Project? project;
+abstract class PlayAudioAction extends AudioAction {}
 
-  PlayAudioAction({this.project});
+class PlayEditingProjectAction extends PlayAudioAction {}
+
+class PlayProjectAction extends PlayAudioAction {
+  final Project project;
+
+  PlayProjectAction({required this.project});
 }
 
 class PauseAudioAction extends AudioAction {}
@@ -43,12 +49,14 @@ final List<
     _initAudioHandlerMiddleware,
   ).call,
   TypedMiddleware<AppState, PlayAudioAction>(
-    _playAudioMiddleware,
+    _setAudioCacheFromPlayingProjectMiddleware,
   ).call,
 ];
 
 Future<void> _initAudioHandlerMiddleware(
     Store<AppState> store, InitAudioHandlerAction action, next) async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   final audioHandler = await AudioService.init(
     builder: () => AppAudioHandler(),
     config: const AudioServiceConfig(
@@ -64,37 +72,50 @@ Future<void> _initAudioHandlerMiddleware(
   next(action);
 }
 
-Future<void> _playAudioMiddleware(
+Future<void> _setAudioCacheFromPlayingProjectMiddleware(
     Store<AppState> store, PlayAudioAction action, next) async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   // default ssml with error text
   String ssml = '<speak>There was an error synthesizing the audio.</speak>';
 
   // if play editing project, set ssml to editing project's ssml
-  final project = action.project;
-  if (project != null) {
-    ssml = project.toSSMLString();
-  } else if (store.state.editingProject != null) {
+  if (action is PlayEditingProjectAction &&
+      store.state.editingProject != null) {
     ssml = store.state.editingProject!.toSSMLString();
+  } else if (action is PlayProjectAction) {
+    ssml = action.project.toSSMLString();
   }
 
   if (Firebase.apps.isNotEmpty) {
     HttpsCallable callable =
-        FirebaseFunctions.instance.httpsCallable('synthesize');
+        FirebaseFunctions.instanceFor(region: 'us-central1')
+            .httpsCallable('synthesize');
 
     final response = await callable(<String, dynamic>{'ssml': ssml});
     final responseMap = jsonDecode(response.data['jsonString']);
-    final responseAudioContent = responseMap['audioContent']['data'];
+    final responseAudioContent =
+        (responseMap['audioContent']['data'] as List<dynamic>).cast<int>();
     final audioCache = String.fromCharCodes(
       Uint8List.fromList(
-        (responseAudioContent as List<dynamic>).cast<int>(),
+        responseAudioContent,
       ),
     );
+
+    // log('response: ${response.data['jsonString']}');
+    // log('responseMap: $responseMap');
+    // log('responseAudioContent: $responseAudioContent');
+    // log('responseAudioContent length: ${responseAudioContent.length}');
+    // log('audioCache: $audioCache');
+    // log('audioCache length: ${audioCache.length}');
 
     store.dispatch(
       SetAudioCacheAction(
         audioCache: audioCache,
       ),
     );
+
+    await store.state.audioHandler?.play();
   }
 
   next(action);
@@ -102,7 +123,7 @@ Future<void> _playAudioMiddleware(
 
 final audioHandlerReducer = combineReducers<AppAudioHandler?>([
   TypedReducer<AppAudioHandler?, SetAudioHandlerAction>(_setAudioHandler).call,
-  TypedReducer<AppAudioHandler?, PlayAudioAction>(_playAudio).call,
+  // TypedReducer<AppAudioHandler?, PlayAudioAction>(_playAudio).call,
 ]);
 
 AppAudioHandler? _setAudioHandler(
@@ -110,7 +131,7 @@ AppAudioHandler? _setAudioHandler(
   return action.audioHandler;
 }
 
-AppAudioHandler? _playAudio(AppAudioHandler? state, PlayAudioAction action) {
-  state?.play();
-  return state;
-}
+// AppAudioHandler? _playAudio(AppAudioHandler? state, PlayAudioAction action) {
+//   state?.play();
+//   // return state;
+// }

@@ -1,14 +1,20 @@
 import 'dart:convert';
 
 List<Input> defaultInputs = [
-  SpeakInput(text: '111'),
+  SpeakInput(text: 'some'),
   PauseInput(delayMS: 1000),
-  SpeakInput(text: '222'),
-  SpeakInput(text: '333'),
-  PauseInput(delayMS: 3000),
-  SpeakInput(text: '444'),
-  SpeakInput(text: '555'),
+  SpeakInput(text: 'text'),
 ];
+
+// List<Input> defaultInputs = [
+//   SpeakInput(text: '111'),
+//   PauseInput(delayMS: 1000),
+//   SpeakInput(text: '222'),
+//   SpeakInput(text: '333'),
+//   PauseInput(delayMS: 3000),
+//   SpeakInput(text: '444'),
+//   SpeakInput(text: '555'),
+// ];
 
 enum InputType { speak, pause }
 

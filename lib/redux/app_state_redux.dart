@@ -22,4 +22,5 @@ List<dynamic Function(Store<AppState>, dynamic, dynamic Function(dynamic))>
   ...currentScreenMiddleware,
   ...projectListMiddleware,
   ...audioHandlerMiddleware,
+  ...audioCacheMiddleware,
 ];

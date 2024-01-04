@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:meditation_maker/audio/custom_audio_source.dart';
@@ -16,7 +18,8 @@ class AppAudioHandler extends BaseAudioHandler
   Future<void> setPlayerAudioSource(String audioContent) async {
     await _player.setAudioSource(CustomAudioSource(audioContent.codeUnits));
 
-    _player.play();
+    // log(audioContent);
+    // _player.play();
   }
 
   Future<void> pause() async {}

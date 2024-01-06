@@ -36,7 +36,7 @@ export const synthesize = onCall(async (req) => {
   });
 
   // logger.info(req);
-  logger.info(req.data.ssml);
+  // logger.info(req.data.ssml);
   // logger.info(await admin.credential.applicationDefault().getAccessToken());
 
   try {
@@ -61,8 +61,6 @@ export const synthesize = onCall(async (req) => {
     );
 
     const result = JSON.stringify(response);
-
-    logger.info(result);
 
     return {
       jsonString: result,

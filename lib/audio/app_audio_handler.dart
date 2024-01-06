@@ -1,8 +1,8 @@
-import 'dart:developer';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:meditation_maker/audio/custom_audio_source.dart';
+import 'package:meditation_maker/redux/player_state_redux.dart';
+import 'package:meditation_maker/redux/redux_store.dart';
 
 class AppAudioHandler extends BaseAudioHandler
     with
@@ -13,10 +13,19 @@ class AppAudioHandler extends BaseAudioHandler
   final _player = AudioPlayer();
 
   @override
-  Future<void> play() => _player.play();
+  Future<void> play() async {
+    await _player.play();
+    _player.playerStateStream.listen(
+      (playerState) {
+        if (playerState.processingState == ProcessingState.completed) {
+          store.dispatch(PlayNextInputAction());
+        }
+      },
+    );
+  }
 
-  Future<void> setPlayerAudioSource(String audioContent) async {
-    await _player.setAudioSource(CustomAudioSource(audioContent.codeUnits));
+  Future<void> setPlayerAudioSource(List<int> audioBytes) async {
+    await _player.setAudioSource(CustomAudioSource(audioBytes));
 
     // log(audioContent);
     // _player.play();

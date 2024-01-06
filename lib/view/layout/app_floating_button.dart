@@ -6,8 +6,13 @@ import 'package:redux/redux.dart';
 
 class AppFloatingButton extends StatelessWidget {
   final AppScreen routeScreen;
+  final bool isVisible;
 
-  const AppFloatingButton(this.routeScreen, {super.key});
+  const AppFloatingButton({
+    super.key,
+    required this.routeScreen,
+    required this.isVisible,
+  });
 
   Widget _getFloatingActionButton(Store<AppState> store) {
     switch (routeScreen) {
@@ -43,7 +48,14 @@ class AppFloatingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Store<AppState>>(
       converter: (store) => store,
-      builder: (context, store) => _getFloatingActionButton(store),
+      builder: (context, store) => AnimatedOpacity(
+        opacity: isVisible ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 85),
+        child: IgnorePointer(
+          ignoring: !isVisible,
+          child: _getFloatingActionButton(store),
+        ),
+      ),
     );
   }
 }

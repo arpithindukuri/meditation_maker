@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/model/project.dart';
+import 'package:meditation_maker/model/wrapped.dart';
 import 'package:meditation_maker/redux/editing_project_redux.dart';
+import 'package:meditation_maker/redux/player_state_redux.dart';
 import 'package:redux/redux.dart';
 
 class AppLoadingAction {
@@ -62,12 +64,29 @@ void _navToProjectEditorMiddleware(
     Store<AppState> store, NavToProjectEditorAction action, next) {
   store.dispatch(SetEditingProjectAction(project: action.project));
 
+  store.dispatch(
+    SetPlayerStateAction(
+      playerState: store.state.playerState.copyWith(
+        playingProject: Wrapped.value(action.project),
+      ),
+    ),
+  );
+
   next(action);
 }
 
 void _navExitProjectEditorMiddleware(
     Store<AppState> store, NavExitProjectEditorAction action, next) {
   store.dispatch(SetEditingProjectAction(project: null));
+
+  store.dispatch(
+    SetPlayerStateAction(
+      playerState: store.state.playerState.copyWith(
+      playingProject: const Wrapped.value(null),
+        playingInput: const Wrapped.value(null),
+      ),
+    ),
+  );
 
   next(action);
 }

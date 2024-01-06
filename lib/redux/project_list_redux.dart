@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:meditation_maker/model/app_state.dart';
@@ -49,15 +50,27 @@ void _loadProjectsMiddleware(
 
   for (final file in files) {
     if (file is File) {
-      final project = Project.fromJsonString(file.readAsStringSync());
+      try {
+        final projectMap = jsonDecode(file.readAsStringSync());
+        final project = Project.fromJson(projectMap);
 
-      if (project != null) {
-        projects.add(project);
-      } else {
-        continue;
-        // projects.add(Project(
-        //     name: 'ERROR: File is not a Project JSON at path: "${file.path}"',
-        //     inputs: []));
+        if (project != null) {
+          projects.add(project);
+        } else {
+          continue;
+        }
+      } catch (e) {
+        // projects.add(
+        //   Project(
+        //     name: file.path.split('/').last,
+        //     created: DateTime.now(),
+        //     inputs: [
+        //       SpeakInput(
+        //           text:
+        //               'ERROR: File is not a Project JSON at path: "${file.path}"')
+        //     ],
+        //   ),
+        // );
       }
     }
   }
@@ -100,9 +113,15 @@ void _createProjectMiddleware(
 
   final file = File('$localPath/$newProjName.json');
 
-  final newProject = Project(name: newProjName, inputs: defaultInputs);
+  final newProject = Project(
+    name: newProjName,
+    created: DateTime.now(),
+    inputs: defaultInputs,
+  );
 
-  await file.writeAsString(newProject.toJsonString());
+  final jsonString = jsonEncode(newProject.toJson());
+
+  await file.writeAsString(jsonString);
 
   state.dispatch(LoadProjectsAction());
 
@@ -119,7 +138,9 @@ void _updateProjectMiddleware(
 
   final file = File('$localPath/$projName.json');
 
-  await file.writeAsString(action.project.toJsonString());
+  final jsonString = jsonEncode(action.project.toJson());
+
+  await file.writeAsString(jsonString);
 
   state.dispatch(LoadProjectsAction());
 

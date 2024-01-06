@@ -21,9 +21,9 @@ Future<void> _setAudioCacheMiddleware(
     Store<AppState> store, SetAudioCacheAction action, next) async {
   final audioCache = action.audioCache;
 
-  if (audioCache != null) {
-    await store.state.audioHandler?.setPlayerAudioSource(audioCache);
-  }
+  // if (audioCache != null) {
+  //   await store.state.audioHandler?.setPlayerAudioSource(audioCache);
+  // }
 
   next(action);
 }

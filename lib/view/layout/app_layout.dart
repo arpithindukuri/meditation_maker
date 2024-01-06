@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:meditation_maker/redux/nav_redux.dart';
+import 'package:meditation_maker/view/layout/app_audio_panel.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:meditation_maker/model/app_state.dart';
-import 'package:meditation_maker/redux/audio_handler_redux.dart';
+import 'package:meditation_maker/redux/player_state_redux.dart';
 import 'package:meditation_maker/redux/redux_store.dart';
 import 'package:meditation_maker/view/layout/app_body.dart';
 import 'package:we_slide/we_slide.dart';
@@ -36,11 +38,11 @@ class AppLayout extends StatelessWidget {
           initialRoute: '/${AppScreen.homeScreen.name}',
           routes: {
             '/${AppScreen.homeScreen.name}': (context) =>
-                const ScaffoldRoute(routeScreen: AppScreen.homeScreen),
+                ScaffoldRoute(routeScreen: AppScreen.homeScreen),
             '/${AppScreen.projectList.name}': (context) =>
-                const ScaffoldRoute(routeScreen: AppScreen.projectList),
+                ScaffoldRoute(routeScreen: AppScreen.projectList),
             '/${AppScreen.projectEditor.name}': (context) =>
-                const ScaffoldRoute(routeScreen: AppScreen.projectEditor),
+                ScaffoldRoute(routeScreen: AppScreen.projectEditor),
           },
         ),
       ),
@@ -48,37 +50,75 @@ class AppLayout extends StatelessWidget {
   }
 }
 
-class ScaffoldRoute extends StatelessWidget {
+class ScaffoldRoute extends StatefulWidget {
   final AppScreen routeScreen;
 
-  const ScaffoldRoute({super.key, required this.routeScreen});
+  ScaffoldRoute({super.key, required this.routeScreen});
+
+  @override
+  State<ScaffoldRoute> createState() => _ScaffoldRouteState();
+}
+
+class _ScaffoldRouteState extends State<ScaffoldRoute> {
+  WeSlideController controller = WeSlideController();
+
+  bool isPanelOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(() {
+      setState(() => isPanelOpen = controller.isOpened);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, AppScreen>(
-      converter: (store) => store.state.currentScreen,
+    return StoreConnector<AppState, Store<AppState>>(
+      converter: (store) => store,
       onInit: (store) async {
         // store.dispatch(InitAudioHandlerAction());
       },
       builder: (context, store) {
-        return Scaffold(
-          extendBodyBehindAppBar: true,
-          extendBody: true,
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          appBar: const AppTopBar(),
-          body: AppWeSlideBody(routeScreen: routeScreen),
-          // empty transparent bottomAppBar to make floatingActionButtonLocation work
-          bottomNavigationBar: BottomAppBar(
-            height: audioBarHeight.toDouble(),
-            color: Colors.transparent,
-            elevation: 0,
-            child: const SizedBox(height: 0),
+        return PopScope(
+          canPop:
+              !isPanelOpen && store.state.currentScreen == AppScreen.homeScreen,
+          onPopInvoked: (didPop) {
+            if (!didPop) {
+              if (isPanelOpen) {
+                controller.hide();
+              } else if (store.state.currentScreen == AppScreen.projectList) {
+                store.dispatch(NavExitProjectListAction(context: context));
+              } else if (store.state.currentScreen == AppScreen.projectEditor) {
+                store.dispatch(NavExitProjectEditorAction(context: context));
+              }
+            }
+          },
+          child: Scaffold(
+            extendBodyBehindAppBar: true,
+            extendBody: true,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            appBar: AppTopBar(isVisible: !isPanelOpen),
+            body: AppWeSlideBody(
+              routeScreen: widget.routeScreen,
+              controller: controller,
+            ),
+            // empty transparent bottomAppBar to make floatingActionButtonLocation work
+            bottomNavigationBar: const BottomAppBar(
+              height: audioBarHeight,
+              color: Colors.transparent,
+              elevation: 0,
+              child: SizedBox(height: 0),
+            ),
+            floatingActionButton: widget.routeScreen == AppScreen.homeScreen ||
+                    widget.routeScreen == AppScreen.projectEditor
+                ? null
+                : AppFloatingButton(
+                    routeScreen: widget.routeScreen,
+                    isVisible: !isPanelOpen,
+                  ),
           ),
-          floatingActionButton: routeScreen == AppScreen.homeScreen ||
-                  routeScreen == AppScreen.projectEditor
-              ? null
-              : AppFloatingButton(routeScreen),
         );
       },
     );
@@ -86,28 +126,33 @@ class ScaffoldRoute extends StatelessWidget {
 }
 
 class AppWeSlideBody extends StatelessWidget {
+  final AppScreen routeScreen;
+  final WeSlideController controller;
+
   const AppWeSlideBody({
     super.key,
     required this.routeScreen,
+    required this.controller,
   });
-
-  final AppScreen routeScreen;
 
   @override
   Widget build(BuildContext context) {
     return WeSlide(
+      controller: controller,
       backgroundColor: Colors.transparent,
-      panelMinSize: audioBarHeight.toDouble(),
+      panelMinSize: audioBarHeight,
       panelMaxSize: MediaQuery.of(context).size.height - 28,
       body: AppBody(routeScreen),
-      panel: const AppAudioBar(),
+      panel: const AppAudioPanel(),
+      panelHeader: const AppAudioBar(),
       overlay: true,
       overlayColor: Theme.of(context).colorScheme.secondary,
       overlayOpacity: 0.5,
       parallax: true,
-      hidePanelHeader: true,
-      hideAppBar: true,
+      parallaxOffset: 0.035,
+      footerHeight: 0,
       hideFooter: true,
+      // hideAppBar: true,
       blurColor: Colors.transparent,
     );
   }

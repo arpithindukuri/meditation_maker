@@ -1,13 +1,7 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:meditation_maker/redux/audio_cache_redux.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:meditation_maker/model/input.dart';
 import 'package:meditation_maker/model/project.dart';
-import 'package:meditation_maker/redux/audio_handler_redux.dart';
+import 'package:meditation_maker/redux/player_state_redux.dart';
 import 'package:meditation_maker/redux/nav_redux.dart';
 import 'package:meditation_maker/redux/project_list_redux.dart';
 import 'package:meditation_maker/redux/redux_store.dart';
@@ -23,13 +17,9 @@ class ProjectListItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String joinedInputs = project.inputs
-        .where((el) => el.type == InputType.speak)
+        .whereType<SpeakInput>()
         .map((input) {
-          if (input is SpeakInput) {
-            return input.text.replaceAll("\n", " ");
-          } else {
-            return null;
-          }
+          return input.text.replaceAll("\n", " ");
         })
         .toList()
         .join(" ");

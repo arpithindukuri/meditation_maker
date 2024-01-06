@@ -10,7 +10,9 @@ import 'package:redux/redux.dart';
 const double appbarHeight = 145;
 
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
-  const AppTopBar({super.key});
+  final bool isVisible;
+
+  const AppTopBar({super.key, required this.isVisible});
 
   Widget _getLeading(BuildContext context, Store<AppState> store) {
     switch (store.state.currentScreen) {
@@ -107,70 +109,76 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
     return StoreConnector<AppState, Store<AppState>>(
         converter: (store) => store,
         builder: (context, store) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
-            height: appbarHeight,
-            child: AppBar(
-              primary: false,
-              automaticallyImplyLeading: false,
-              toolbarHeight: appbarHeight,
-              leadingWidth: appbarHeight / 1.75,
-              elevation: 0,
-              scrolledUnderElevation: 0,
-              foregroundColor:
-                  Theme.of(context).colorScheme.onSecondary.withOpacity(0.7),
-              centerTitle: true,
-              titleTextStyle: TextStyle(
-                fontSize: Theme.of(context).textTheme.titleLarge!.fontSize!,
-                fontWeight: FontWeight.w400,
-                color:
+          return AnimatedOpacity(
+            opacity: isVisible ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 85),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
+              height: appbarHeight,
+              child: AppBar(
+                primary: false,
+                automaticallyImplyLeading: false,
+                toolbarHeight: appbarHeight,
+                leadingWidth: appbarHeight / 1.75,
+                elevation: 0,
+                scrolledUnderElevation: 0,
+                foregroundColor:
                     Theme.of(context).colorScheme.onSecondary.withOpacity(0.7),
-              ),
-              // scrolledUnderElevation: 35,
-              // elevation: 2,
-              flexibleSpace: Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(28),
+                centerTitle: true,
+                titleTextStyle: TextStyle(
+                  fontSize: Theme.of(context).textTheme.titleLarge!.fontSize!,
+                  fontWeight: FontWeight.w400,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSecondary
+                      .withOpacity(0.7),
                 ),
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
+                // scrolledUnderElevation: 35,
+                // elevation: 2,
+                flexibleSpace: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(28),
+                  ),
+                  child: ClipRRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondary
+                                .withOpacity(0.8),
+                            width: 2,
+                          ),
                           color: Theme.of(context)
                               .colorScheme
                               .secondary
-                              .withOpacity(0.8),
-                          width: 2,
+                              .withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(28),
+                          // boxShadow: [
+                          //   BoxShadow(
+                          //     blurRadius: 2,
+                          //     color: Colors.white.withOpacity(0.45),
+                          //     offset: const Offset(0, 4),
+                          //   ),
+                          // ],
                         ),
-                        color: Theme.of(context)
-                            .colorScheme
-                            .secondary
-                            .withOpacity(0.35),
-                        borderRadius: BorderRadius.circular(28),
-                        // boxShadow: [
-                        //   BoxShadow(
-                        //     blurRadius: 2,
-                        //     color: Colors.white.withOpacity(0.45),
-                        //     offset: const Offset(0, 4),
-                        //   ),
-                        // ],
                       ),
                     ),
                   ),
                 ),
+                leading: Container(
+                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                    child: _getLeading(context, store)),
+                titleSpacing: 0,
+                title: _getTitle(context, store),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(28)),
+                ),
+                actions: _getActions(context, store),
               ),
-              leading: Container(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                  child: _getLeading(context, store)),
-              titleSpacing: 0,
-              title: _getTitle(context, store),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(28)),
-              ),
-              actions: _getActions(context, store),
             ),
           );
         });

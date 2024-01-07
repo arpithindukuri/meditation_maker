@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:meditation_maker/api/api.dart';
@@ -140,10 +138,34 @@ Future<void> _playProjectMiddleware(
     ),
   );
 
-  if (project.inputs.isNotEmpty) {
-    store.dispatch(
-      PlayInputAction(input: project.inputs.first),
+  try {
+    ConcatenatingAudioSource? audioSources = ConcatenatingAudioSource(
+      useLazyPreparation: false,
+      children: project.inputs.map((input) {
+        if (input is SpeakInput && input.audioBytes != null) {
+          final List<int> audioBytes = input.audioBytes!;
+          return SpeakAudioSource(audioBytes);
+        } else if (input is PauseInput) {
+          final duration = (input.delayMS / 1000).round();
+          return PauseAudioSource(durationParam: Duration(seconds: duration));
+        } else {
+          throw Exception('Input type not supported.');
+        }
+      }).toList(),
     );
+
+    await store.state.playerState.audioHandler
+        ?.setPlayerAudioSource(audioSources);
+
+    await store.state.playerState.audioHandler?.play();
+
+    // if (project.inputs.isNotEmpty) {
+    //   store.dispatch(
+    //     PlayInputAction(input: project.inputs.first),
+    //   );
+    // }
+  } catch (e) {
+    // log(e.toString());
   }
 
   next(action);
@@ -168,7 +190,7 @@ Future<void> _playInputMiddleware(
     audioSource = SpeakAudioSource(audioBytes);
   } else if (input is PauseInput) {
     final duration = (input.delayMS / 1000).round();
-    audioSource = PauseAudioSource(duration: Duration(seconds: duration));
+    audioSource = PauseAudioSource(durationParam: Duration(seconds: duration));
   }
 
   if (audioSource != null) {

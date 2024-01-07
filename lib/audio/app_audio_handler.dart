@@ -1,7 +1,5 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:meditation_maker/redux/player_state_redux.dart';
-import 'package:meditation_maker/redux/redux_store.dart';
 
 class AppAudioHandler extends BaseAudioHandler
     with
@@ -9,22 +7,24 @@ class AppAudioHandler extends BaseAudioHandler
         SeekHandler {
   // mix in default seek callback implementations
 
-  final _player = AudioPlayer();
+  final player = AudioPlayer();
 
   @override
   Future<void> play() async {
-    _player.playerStateStream.listen(
-      (playerState) {
-        if (playerState.processingState == ProcessingState.completed) {
-          store.dispatch(PlayNextInputAction());
-        }
-      },
-    );
-    await _player.play();
+    // player.playerStateStream.listen(
+    //   (playerState) {
+    //     if (playerState.processingState == ProcessingState.completed) {
+    //       store.dispatch(PlayNextInputAction());
+    //     }
+    //   },
+    // );
+    if (player.audioSource != null) {
+      await player.play();
+    }
   }
 
-  Future<void> setPlayerAudioSource(StreamAudioSource audioSource) async {
-    await _player.setAudioSource(audioSource);
+  Future<void> setPlayerAudioSource(AudioSource audioSource) async {
+    await player.setAudioSource(audioSource);
 
     // log(audioContent);
     // _player.play();
@@ -34,7 +34,7 @@ class AppAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> stop() async {
-    await _player.stop();
+    await player.stop();
   }
 
   Future<void> seek(Duration position) async {}

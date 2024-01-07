@@ -16,7 +16,7 @@ class SpeakAudioSource extends StreamAudioSource {
       contentLength: end - start,
       offset: start,
       stream: Stream.value(bytes.sublist(start, end)),
-      contentType: 'audio/mpeg',
+      contentType: 'audio/l16',
     );
   }
 }
@@ -26,9 +26,11 @@ class PauseAudioSource extends StreamAudioSource {
   late final int _trackLength;
   late final int _streamLength;
 
-  PauseAudioSource({required Duration duration, super.tag})
-      : _header = _createWavHeader(duration),
-        _trackLength = _calculateByteLength(duration) {
+  final Duration durationParam;
+
+  PauseAudioSource({required this.durationParam, super.tag})
+      : _header = _createWavHeader(durationParam),
+        _trackLength = _calculateByteLength(durationParam) {
     _streamLength = _trackLength + _header.length;
   }
 

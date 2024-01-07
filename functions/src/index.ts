@@ -48,7 +48,7 @@ export const synthesize = onCall(async (req) => {
           ssmlGender: google.cloud.texttospeech.v1.SsmlVoiceGender.NEUTRAL,
         },
         audioConfig: {
-          audioEncoding: google.cloud.texttospeech.v1.AudioEncoding.MP3,
+          audioEncoding: google.cloud.texttospeech.v1.AudioEncoding.LINEAR16,
         },
       }
       // {

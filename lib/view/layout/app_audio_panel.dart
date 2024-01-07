@@ -3,10 +3,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:meditation_maker/model/app_state.dart';
-import 'package:meditation_maker/model/input.dart';
 import 'package:meditation_maker/model/project.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:meditation_maker/view/layout/app_audio_bar.dart';
+
+import 'audio_panel_controls.dart';
+import 'audio_panel_input_carousel.dart';
 
 class AppAudioPanel extends StatelessWidget {
   const AppAudioPanel({
@@ -78,174 +79,6 @@ class AppAudioPanel extends StatelessWidget {
                       ),
               ),
             ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class AudioPanelInputCarousel extends StatefulWidget {
-  const AudioPanelInputCarousel({
-    super.key,
-  });
-
-  @override
-  State<AudioPanelInputCarousel> createState() =>
-      _AudioPanelInputCarouselState();
-}
-
-class _AudioPanelInputCarouselState extends State<AudioPanelInputCarousel> {
-  final CarouselController _controller = CarouselController();
-
-  @override
-  Widget build(BuildContext context) {
-    return StoreConnector<AppState, AudioPlayerState>(
-      onDidChange: (prevState, currState) {
-        if (currState.playingProject != null &&
-            currState.playingProject!.inputs.isNotEmpty &&
-            currState.playingInput != null) {
-          _controller.animateToPage(
-            currState.playingProject!.inputs.indexOf(
-              currState.playingInput!,
-            ),
-            curve: Curves.decelerate,
-            duration: const Duration(milliseconds: 200),
-          );
-        }
-      },
-      converter: (store) => store.state.playerState,
-      builder: (context, playerState) {
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.25),
-              width: 2,
-            ),
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.02),
-          ),
-          child: CarouselSlider(
-            options: CarouselOptions(
-              scrollDirection: Axis.vertical,
-              disableCenter: true,
-              viewportFraction: 1.0,
-              enableInfiniteScroll: false,
-              scrollPhysics: const BouncingScrollPhysics(
-                decelerationRate: ScrollDecelerationRate.fast,
-              ),
-            ),
-            carouselController: _controller,
-            items: playerState.playingProject?.inputs.map(
-              (input) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return CarouselCard(input: input);
-                  },
-                );
-              },
-            ).toList(),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class CarouselCard extends StatelessWidget {
-  final Input input;
-
-  const CarouselCard({super.key, required this.input});
-
-  String _getInputText(Input input) {
-    if (input is SpeakInput) {
-      return input.text;
-    } else if (input is PauseInput) {
-      return 'Pause';
-    } else {
-      return '';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      alignment: Alignment.center,
-      // decoration: BoxDecoration(
-      //   borderRadius: BorderRadius.circular(32),
-      //   border: Border.all(
-      //     color: Theme.of(context).colorScheme.primary.withOpacity(0.25),
-      //     width: 2,
-      //   ),
-      //   color: Theme.of(context).colorScheme.primary.withOpacity(0.02),
-      // ),
-      child: Text(
-        _getInputText(input),
-        style: Theme.of(context).textTheme.headlineSmall,
-        textAlign: TextAlign.center,
-        maxLines: 5,
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-}
-
-class AudioPanelControls extends StatelessWidget {
-  const AudioPanelControls({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return StoreConnector<AppState, Project>(
-      converter: (store) => store.state.playerState.playingProject!,
-      builder: (context, playingProject) {
-        return Container(
-          // padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Slider(
-                value: 0.5,
-                onChanged: (value) {},
-                divisions: playingProject.inputs.length,
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              SizedBox(
-                height: audioBarHeight,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox.square(
-                      dimension: audioBarHeight,
-                      child: IconButton(
-                        icon: const Icon(Icons.skip_previous_rounded),
-                        onPressed: () {},
-                      ),
-                    ),
-                    SizedBox.square(
-                      dimension: audioBarHeight,
-                      child: IconButton(
-                        icon: const Icon(Icons.play_arrow_rounded),
-                        onPressed: () {},
-                      ),
-                    ),
-                    SizedBox.square(
-                      dimension: audioBarHeight,
-                      child: IconButton(
-                        icon: const Icon(Icons.skip_next_rounded),
-                        onPressed: () {},
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
         );
       },

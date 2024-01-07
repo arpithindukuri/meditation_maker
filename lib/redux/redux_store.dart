@@ -7,7 +7,7 @@ final store = Store<AppState>(
   initialState: AppState(
     currentScreen: AppScreen.homeScreen,
     isBodyLoading: false,
-    playerState: PlayerState(),
+    playerState: AudioPlayerState(),
     projectList: [],
     editingProject: null,
   ),

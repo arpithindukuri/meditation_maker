@@ -29,7 +29,7 @@ class _PauseInputCardState extends State<PauseInputCard> {
       store.dispatch(
         UpdateInputAction(
           index: widget.inputIndex,
-          input: PauseInput(
+          input: widget.input.copyWith(
             delayMS: controller.text.isEmpty ? 0 : int.parse(controller.text),
           ),
         ),

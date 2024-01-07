@@ -57,13 +57,16 @@ class Project {
             Input? mapResult;
 
             if (inputType == InputType.speak.name) {
-              mapResult = SpeakInput().fromJson(inputMap);
+              mapResult = SpeakInput.fromJson(inputMap);
             } else if (inputType == InputType.pause.name) {
-              mapResult = PauseInput().fromJson(inputMap);
+              mapResult = PauseInput.fromJson(inputMap);
             }
 
             return mapResult ??
-                SpeakInput(text: 'Error in saved project file. Invalid input.');
+                SpeakInput(
+                  orderIndex: jsonInputs.indexOf(inputMap),
+                  text: 'Error in saved project file. Invalid input.',
+                );
           },
         ),
       );

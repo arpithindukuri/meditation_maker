@@ -28,7 +28,9 @@ class _SpeakInputCardState extends State<SpeakInputCard> {
       store.dispatch(
         UpdateInputAction(
           index: widget.inputIndex,
-          input: SpeakInput(text: controller.text),
+          input: widget.input.copyWith(
+            text: controller.text,
+          ),
         ),
       );
     });

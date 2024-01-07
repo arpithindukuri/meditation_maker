@@ -21,6 +21,7 @@ List<dynamic Function(Store<AppState>, dynamic, dynamic Function(dynamic))>
     appMiddleware = [
   ...currentScreenMiddleware,
   ...projectListMiddleware,
+  ...editingProjectMiddleware,
   ...playerStateMiddleware,
   // ...audioCacheMiddleware,
 ];

@@ -57,15 +57,21 @@ void _loadProjectsMiddleware(
         if (project != null) {
           projects.add(project);
         } else {
-          continue;
+          // throw an error for the next catch block to catch
+          throw Exception('Project could not be read from file.');
         }
       } catch (e) {
+        // final fileName = file.path.split('/').last;
+        // final projName = fileName.lastIndexOf('.') > 0
+        //     ? fileName.substring(0, fileName.lastIndexOf('.'))
+        //     : fileName;
         // projects.add(
         //   Project(
-        //     name: file.path.split('/').last,
+        //     name: projName,
         //     created: DateTime.now(),
         //     inputs: [
         //       SpeakInput(
+        //           orderIndex: 0,
         //           text:
         //               'ERROR: File is not a Project JSON at path: "${file.path}"')
         //     ],
@@ -75,7 +81,9 @@ void _loadProjectsMiddleware(
     }
   }
 
-  state.dispatch(SetProjectsAction(projects: projects));
+  final sortedProjects = projects..sort((a, b) => a.name.compareTo(b.name));
+
+  state.dispatch(SetProjectsAction(projects: sortedProjects));
 
   next(action);
 }
@@ -85,7 +93,7 @@ Future<String> getNewProjectName() async {
   final localDir = await getApplicationDocumentsDirectory();
   final localPath = localDir.path;
 
-  String newProjName = "New Project";
+  String newProjName = "A New Project";
   int duplicateNum = 0;
 
   File file = File('$localPath/$newProjName.json');

@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:meditation_maker/api/api.dart';
 import 'package:meditation_maker/audio/app_audio_handler.dart';
+import 'package:meditation_maker/audio/custom_audio_source.dart';
 import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/model/input.dart';
 import 'package:meditation_maker/model/project.dart';
@@ -14,7 +18,7 @@ sealed class PlayerStateAction {}
 class InitAudioHandlerAction extends PlayerStateAction {}
 
 class SetPlayerStateAction extends PlayerStateAction {
-  final PlayerState playerState;
+  final AudioPlayerState playerState;
 
   SetPlayerStateAction({required this.playerState});
 }
@@ -87,34 +91,43 @@ Future<void> _initAudioHandlerMiddleware(
   next(action);
 }
 
+Future<Project> getProjectWithAudio(Project project) async {
+  final inputs = project.inputs;
+  List<Input> inputsWithAudio = [];
+
+  for (final input in inputs) {
+    if (input is PauseInput) {
+      inputsWithAudio.add(input);
+    } else if (input is SpeakInput) {
+      final audioBytes = await getAudioBytesFromSSML(speakInputToSSML(input));
+      inputsWithAudio.add(
+        input.copyWith(
+          audioBytes: Wrapped.value(audioBytes),
+        ),
+      );
+    }
+  }
+
+  final projectWithAudio = project.copyWith(inputs: inputsWithAudio);
+
+  return projectWithAudio;
+}
+
 Future<void> _playProjectMiddleware(
     Store<AppState> store, PlayProjectAction action, next) async {
   Project project = action.project;
 
   final isProjectAudioSaved = action.project.inputs.every((input) =>
-      (input is SpeakInput && input.audioBytes != null) ||
-      (input is PauseInput));
+      (input is PauseInput) ||
+      (input is SpeakInput && input.audioBytes != null));
 
-  // if project does not have audio saved, get it
-  if (!isProjectAudioSaved) {
-    final inputs = action.project.inputs;
-    List<Input> inputsWithAudio = [];
-
-    for (final input in inputs) {
-      if (input is PauseInput) {
-        inputsWithAudio.add(input);
-        continue;
-      } else if (input is SpeakInput) {
-        final audioBytes = await getAudioBytesFromSSML(speakInputToSSML(input));
-        inputsWithAudio.add(
-          input.copyWith(
-            audioBytes: Wrapped.value(audioBytes),
-          ),
-        );
-      }
-    }
-
-    final projectWithAudio = action.project.copyWith(inputs: inputsWithAudio);
+  // if project does not have audio saved,
+  // or if project to play is the one currently being edited,
+  // get and save audio for project inputs
+  if (!isProjectAudioSaved ||
+      (store.state.currentScreen == AppScreen.projectEditor &&
+          store.state.editingProject == action.project)) {
+    final projectWithAudio = await getProjectWithAudio(action.project);
 
     project = projectWithAudio;
   }
@@ -148,9 +161,19 @@ Future<void> _playInputMiddleware(
     ),
   );
 
+  StreamAudioSource? audioSource;
+
   if (input is SpeakInput && input.audioBytes != null) {
+    final List<int> audioBytes = input.audioBytes!;
+    audioSource = SpeakAudioSource(audioBytes);
+  } else if (input is PauseInput) {
+    final duration = (input.delayMS / 1000).round();
+    audioSource = PauseAudioSource(duration: Duration(seconds: duration));
+  }
+
+  if (audioSource != null) {
     await store.state.playerState.audioHandler
-        ?.setPlayerAudioSource(input.audioBytes!);
+        ?.setPlayerAudioSource(audioSource);
 
     await store.state.playerState.audioHandler?.play();
   }
@@ -166,6 +189,8 @@ Future<void> _playNextInputMiddleware(
   // log("currentProject: $currentProject");
   // log("currentInput: $currentInput");
 
+  // await store.state.playerState.audioHandler?.stop();
+
   if (currentProject == null || currentInput == null) return;
 
   final currentInputIndex = currentProject.inputs.indexOf(currentInput);
@@ -180,10 +205,11 @@ Future<void> _playNextInputMiddleware(
   next(action);
 }
 
-final playerStateReducer = combineReducers<PlayerState>([
-  TypedReducer<PlayerState, SetPlayerStateAction>(_setPlayerState).call,
+final playerStateReducer = combineReducers<AudioPlayerState>([
+  TypedReducer<AudioPlayerState, SetPlayerStateAction>(_setPlayerState).call,
 ]);
 
-PlayerState _setPlayerState(PlayerState state, SetPlayerStateAction action) {
+AudioPlayerState _setPlayerState(
+    AudioPlayerState state, SetPlayerStateAction action) {
   return action.playerState;
 }

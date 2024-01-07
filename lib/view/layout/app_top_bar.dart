@@ -107,11 +107,13 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Store<AppState>>(
-        converter: (store) => store,
-        builder: (context, store) {
-          return AnimatedOpacity(
-            opacity: isVisible ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 85),
+      converter: (store) => store,
+      builder: (context, store) {
+        return AnimatedOpacity(
+          opacity: isVisible ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 85),
+          child: IgnorePointer(
+            ignoring: !isVisible,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
               height: appbarHeight,
@@ -180,8 +182,10 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                 actions: _getActions(context, store),
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   @override

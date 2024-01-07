@@ -9,26 +9,26 @@ enum AppScreen {
   projectEditor,
 }
 
-class PlayerState {
+class AudioPlayerState {
   bool isPlaying;
   AppAudioHandler? audioHandler;
   Project? playingProject;
   Input? playingInput;
 
-  PlayerState({
+  AudioPlayerState({
     this.isPlaying = false,
     this.audioHandler,
     this.playingProject,
     this.playingInput,
   });
 
-  PlayerState copyWith({
+  AudioPlayerState copyWith({
     bool? isPlaying,
     AppAudioHandler? audioHandler,
     Wrapped<Project?>? playingProject,
     Wrapped<Input?>? playingInput,
   }) {
-    return PlayerState(
+    return AudioPlayerState(
       isPlaying: isPlaying ?? this.isPlaying,
       audioHandler: audioHandler ?? this.audioHandler,
       playingProject:
@@ -43,7 +43,7 @@ class AppState {
   AppScreen currentScreen;
   List<Project> projectList;
   Project? editingProject;
-  PlayerState playerState;
+  AudioPlayerState playerState;
   bool isBodyLoading;
   // String? audioCache;
 
@@ -61,7 +61,7 @@ class AppState {
     AppScreen? currentScreen,
     List<Project>? projectList,
     Wrapped<Project?>? editingProject,
-    PlayerState? playerState,
+    AudioPlayerState? playerState,
     bool? isBodyLoading,
     // String? audioCache,
   }) {

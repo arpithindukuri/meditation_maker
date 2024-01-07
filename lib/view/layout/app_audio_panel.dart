@@ -85,16 +85,37 @@ class AppAudioPanel extends StatelessWidget {
   }
 }
 
-class AudioPanelInputCarousel extends StatelessWidget {
+class AudioPanelInputCarousel extends StatefulWidget {
   const AudioPanelInputCarousel({
     super.key,
   });
 
   @override
+  State<AudioPanelInputCarousel> createState() =>
+      _AudioPanelInputCarouselState();
+}
+
+class _AudioPanelInputCarouselState extends State<AudioPanelInputCarousel> {
+  final CarouselController _controller = CarouselController();
+
+  @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, Project>(
-      converter: (store) => store.state.playerState.playingProject!,
-      builder: (context, playingProject) {
+    return StoreConnector<AppState, AudioPlayerState>(
+      onDidChange: (prevState, currState) {
+        if (currState.playingProject != null &&
+            currState.playingProject!.inputs.isNotEmpty &&
+            currState.playingInput != null) {
+          _controller.animateToPage(
+            currState.playingProject!.inputs.indexOf(
+              currState.playingInput!,
+            ),
+            curve: Curves.decelerate,
+            duration: const Duration(milliseconds: 200),
+          );
+        }
+      },
+      converter: (store) => store.state.playerState,
+      builder: (context, playerState) {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
           decoration: BoxDecoration(
@@ -115,7 +136,8 @@ class AudioPanelInputCarousel extends StatelessWidget {
                 decelerationRate: ScrollDecelerationRate.fast,
               ),
             ),
-            items: playingProject.inputs.map(
+            carouselController: _controller,
+            items: playerState.playingProject?.inputs.map(
               (input) {
                 return Builder(
                   builder: (BuildContext context) {

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,6 +5,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:meditation_maker/audio/custom_audio_source.dart';
 import 'package:meditation_maker/model/app_state.dart';
+import 'package:meditation_maker/redux/player_state_redux.dart';
+import 'package:meditation_maker/redux/redux_store.dart';
 // import 'package:meditation_maker/redux/redux_store.dart';
 import 'package:meditation_maker/view/layout/app_audio_bar.dart';
 
@@ -19,45 +20,6 @@ class AudioPanelControls extends StatefulWidget {
 }
 
 class _AudioPanelControlsState extends State<AudioPanelControls> {
-  // Duration _prevInputsDuration = Duration.zero;
-  // Duration _totalInputsDuration = Duration.zero;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   store.state.playerState.audioHandler?.player.currentIndexStream.listen(
-  //     (index) {
-  //       if (index != null) {
-  //         setState(
-  //           () {
-  //             _prevInputsDuration = Duration(
-  //               milliseconds: store
-  //                       .state.playerState.audioHandler?.player.sequence
-  //                       ?.sublist(0, index - 1)
-  //                       .fold<int>(
-  //                         0,
-  //                         (prev, el) =>
-  //                             prev + (el.duration?.inMicroseconds ?? 0),
-  //                       ) ??
-  //                   0,
-  //             );
-  //             _totalInputsDuration = Duration(
-  //               milliseconds: store
-  //                       .state.playerState.audioHandler?.player.sequence
-  //                       ?.fold<int>(
-  //                     0,
-  //                     (prev, el) => prev + (el.duration?.inMicroseconds ?? 0),
-  //                   ) ??
-  //                   0,
-  //             );
-  //           },
-  //         );
-  //       }
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AudioPlayerState>(
@@ -66,7 +28,7 @@ class _AudioPanelControlsState extends State<AudioPanelControls> {
         return StreamBuilder<int?>(
             stream: playerState.audioHandler?.player.currentIndexStream,
             builder: (context, currentIndexSnapshot) {
-              log('currentIndexSnapshot: ${currentIndexSnapshot.data}');
+              // log('currentIndexSnapshot: ${currentIndexSnapshot.data}');
 
               final audioSource = playerState.audioHandler?.player.audioSource;
 
@@ -87,7 +49,7 @@ class _AudioPanelControlsState extends State<AudioPanelControls> {
                       int sampleRate = 24000;
                       int channels = 1;
                       int bitsPerSample = 16;
-                      log('el.bytes.length: ${el.bytes.length * 1000000 ~/ (sampleRate * channels * (bitsPerSample ~/ 8))}');
+                      // log('el.bytes.length: ${el.bytes.length * 1000000 ~/ (sampleRate * channels * (bitsPerSample ~/ 8))}');
                       return prev +
                           el.bytes.length *
                               1000000 ~/
@@ -95,7 +57,7 @@ class _AudioPanelControlsState extends State<AudioPanelControls> {
                       // log('el.duration.inMicroseconds: ${el.duration?.inMicroseconds}');
                       // return prev + (el.duration?.inMicroseconds ?? 0);
                     } else if (el is PauseAudioSource) {
-                      log('el.durationParam.inMicroseconds: ${el.durationParam.inMicroseconds}');
+                      // log('el.durationParam.inMicroseconds: ${el.durationParam.inMicroseconds}');
                       return prev + (el.durationParam.inMicroseconds);
                     } else {
                       return prev;
@@ -122,9 +84,9 @@ class _AudioPanelControlsState extends State<AudioPanelControls> {
               final int totalInputsDurationMS =
                   totalInputsDuration.inMicroseconds;
 
-              log('prevInputsDurationMS: $prevInputsDurationMS');
-              log('durationMS: $totalInputsDurationMS');
-              log('audioSourceList: $audioSourceList');
+              // log('prevInputsDurationMS: $prevInputsDurationMS');
+              // log('durationMS: $totalInputsDurationMS');
+              // log('audioSourceList: $audioSourceList');
 
               // ignored because of nested stream builder
               // ignore: avoid_unnecessary_containers
@@ -161,10 +123,20 @@ class _AudioPanelControlsState extends State<AudioPanelControls> {
                                 ),
                                 SizedBox.square(
                                   dimension: audioBarHeight,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.play_arrow_rounded),
-                                    onPressed: () {},
-                                  ),
+                                  child: playerState
+                                              .audioHandler?.player.playing ??
+                                          false
+                                      ? IconButton(
+                                          icon: const Icon(Icons.pause_rounded),
+                                          onPressed: () {
+                                            store.dispatch(PauseAudioAction());
+                                          },
+                                        )
+                                      : IconButton(
+                                          icon: const Icon(
+                                              Icons.play_arrow_rounded),
+                                          onPressed: () {},
+                                        ),
                                 ),
                                 SizedBox.square(
                                   dimension: audioBarHeight,

@@ -11,13 +11,13 @@ class AppAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> play() async {
-    // player.playerStateStream.listen(
-    //   (playerState) {
-    //     if (playerState.processingState == ProcessingState.completed) {
-    //       store.dispatch(PlayNextInputAction());
-    //     }
-    //   },
-    // );
+    player.playerStateStream.listen(
+      (playerState) {
+        if (playerState.processingState == ProcessingState.completed) {
+          stop();
+        }
+      },
+    );
     if (player.audioSource != null) {
       await player.play();
     }
@@ -30,14 +30,19 @@ class AppAudioHandler extends BaseAudioHandler
     // _player.play();
   }
 
-  Future<void> pause() async {}
+  @override
+  Future<void> pause() async {
+    await player.pause();
+  }
 
   @override
   Future<void> stop() async {
     await player.stop();
   }
 
+  @override
   Future<void> seek(Duration position) async {}
 
+  @override
   Future<void> skipToQueueItem(int i) async {}
 }

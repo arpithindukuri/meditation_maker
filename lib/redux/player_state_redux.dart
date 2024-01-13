@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:meditation_maker/api/api.dart';
@@ -7,6 +9,7 @@ import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/model/input.dart';
 import 'package:meditation_maker/model/project.dart';
 import 'package:meditation_maker/model/wrapped.dart';
+import 'package:meditation_maker/redux/project_list_redux.dart';
 import 'package:meditation_maker/util/ssml.dart';
 import 'package:redux/redux.dart';
 import 'package:audio_service/audio_service.dart';
@@ -25,21 +28,22 @@ class PlayAudioAction extends PlayerStateAction {}
 
 class PlayProjectAction extends PlayAudioAction {
   final Project project;
+  final Input? playInput;
 
-  PlayProjectAction({required this.project});
+  PlayProjectAction({required this.project, this.playInput});
 }
 
-class PlayInputAction extends PlayAudioAction {
-  final Input input;
+// class PlayInputAction extends PlayAudioAction {
+//   final Input input;
 
-  PlayInputAction({required this.input});
-}
+//   PlayInputAction({required this.input});
+// }
 
 class PlayNextInputAction extends PlayAudioAction {}
 
-class PauseAudioAction extends PlayerStateAction {}
+class PlayPrevInputAction extends PlayAudioAction {}
 
-class StopAudioAction extends PlayerStateAction {}
+class PauseAudioAction extends PlayerStateAction {}
 
 class SeekAudioAction extends PlayerStateAction {
   final Duration position;
@@ -56,11 +60,14 @@ final List<
   TypedMiddleware<AppState, PlayProjectAction>(
     _playProjectMiddleware,
   ).call,
-  TypedMiddleware<AppState, PlayInputAction>(
-    _playInputMiddleware,
-  ).call,
   TypedMiddleware<AppState, PlayNextInputAction>(
     _playNextInputMiddleware,
+  ).call,
+  TypedMiddleware<AppState, PlayPrevInputAction>(
+    _playPrevInputMiddleware,
+  ).call,
+  TypedMiddleware<AppState, PauseAudioAction>(
+    _pauseAudioMiddleware,
   ).call,
 ];
 
@@ -89,31 +96,24 @@ Future<void> _initAudioHandlerMiddleware(
   next(action);
 }
 
-Future<Project> getProjectWithAudio(Project project) async {
-  final inputs = project.inputs;
-  List<Input> inputsWithAudio = [];
-
-  for (final input in inputs) {
-    if (input is PauseInput) {
-      inputsWithAudio.add(input);
-    } else if (input is SpeakInput) {
-      final audioBytes = await getAudioBytesFromSSML(speakInputToSSML(input));
-      inputsWithAudio.add(
-        input.copyWith(
-          audioBytes: Wrapped.value(audioBytes),
-        ),
-      );
-    }
-  }
-
-  final projectWithAudio = project.copyWith(inputs: inputsWithAudio);
-
-  return projectWithAudio;
-}
-
 Future<void> _playProjectMiddleware(
     Store<AppState> store, PlayProjectAction action, next) async {
+  store.dispatch(
+    SetPlayerStateAction(
+      playerState: store.state.playerState.copyWith(
+        isAudioLoading: true,
+      ),
+    ),
+  );
+
+  if (store.state.playerState.audioHandler?.player.playing ?? false) {
+    await store.state.playerState.audioHandler?.stop();
+  }
+
   Project project = action.project;
+  Input? playInput = action.playInput;
+
+  if (project.inputs.isEmpty) return;
 
   final isProjectAudioSaved = action.project.inputs.every((input) =>
       (input is PauseInput) ||
@@ -123,17 +123,30 @@ Future<void> _playProjectMiddleware(
   // or if project to play is the one currently being edited,
   // get and save audio for project inputs
   if (!isProjectAudioSaved ||
-      (store.state.currentScreen == AppScreen.projectEditor &&
-          store.state.editingProject == action.project)) {
-    final projectWithAudio = await getProjectWithAudio(action.project);
+      store.state.currentScreen == AppScreen.projectEditor) {
+    final newProj = await getProjectWithAudio(action.project);
 
-    project = projectWithAudio;
+    project = newProj;
+
+    // if audio was reloaded from API, update project in project list
+    store.dispatch(UpdateProjectAction(project: newProj));
   }
+
+  final playInputIndex = action.playInput == null
+      ? 0
+      : action.project.inputs.indexOf(action.playInput!);
+
+  playInput = playInput == null
+      ? project.inputs.first
+      : playInputIndex < 0
+          ? project.inputs.first
+          : project.inputs[playInputIndex];
 
   store.dispatch(
     SetPlayerStateAction(
       playerState: store.state.playerState.copyWith(
         playingProject: Wrapped.value(project),
+        playingInput: Wrapped.value(playInput),
       ),
     ),
   );
@@ -154,54 +167,72 @@ Future<void> _playProjectMiddleware(
       }).toList(),
     );
 
-    await store.state.playerState.audioHandler
-        ?.setPlayerAudioSource(audioSources);
+    if (playInputIndex >= 0) {
+      await store.state.playerState.audioHandler
+          ?.setPlayerAudioSource(audioSources);
 
-    await store.state.playerState.audioHandler?.play();
+      await store.state.playerState.audioHandler
+          ?.skipToQueueItem(playInputIndex);
 
-    // if (project.inputs.isNotEmpty) {
-    //   store.dispatch(
-    //     PlayInputAction(input: project.inputs.first),
-    //   );
-    // }
+      await store.state.playerState.audioHandler?.seek(Duration.zero);
+
+      // store.dispatch(
+      //   SetPlayerStateAction(
+      //     playerState: store.state.playerState.copyWith(
+      //       isAudioLoading: false,
+      //     ),
+      //   ),
+      // );
+
+      // await store.state.playerState.audioHandler?.play();
+      store.state.playerState.audioHandler?.play();
+    }
   } catch (e) {
-    // log(e.toString());
+    log(e.toString());
   }
-
-  next(action);
-}
-
-Future<void> _playInputMiddleware(
-    Store<AppState> store, PlayInputAction action, next) async {
-  final input = action.input;
 
   store.dispatch(
     SetPlayerStateAction(
       playerState: store.state.playerState.copyWith(
-        playingInput: Wrapped.value(input),
+        isAudioLoading: false,
       ),
     ),
   );
 
-  StreamAudioSource? audioSource;
-
-  if (input is SpeakInput && input.audioBytes != null) {
-    final List<int> audioBytes = input.audioBytes!;
-    audioSource = SpeakAudioSource(audioBytes);
-  } else if (input is PauseInput) {
-    final duration = (input.delayMS / 1000).round();
-    audioSource = PauseAudioSource(durationParam: Duration(seconds: duration));
-  }
-
-  if (audioSource != null) {
-    await store.state.playerState.audioHandler
-        ?.setPlayerAudioSource(audioSource);
-
-    await store.state.playerState.audioHandler?.play();
-  }
-
   next(action);
 }
+
+// Future<void> _playInputMiddleware(
+//     Store<AppState> store, PlayInputAction action, next) async {
+//   final input = action.input;
+
+//   store.dispatch(
+//     SetPlayerStateAction(
+//       playerState: store.state.playerState.copyWith(
+//         playingInput: Wrapped.value(input),
+//       ),
+//     ),
+//   );
+
+//   StreamAudioSource? audioSource;
+
+//   if (input is SpeakInput && input.audioBytes != null) {
+//     final List<int> audioBytes = input.audioBytes!;
+//     audioSource = SpeakAudioSource(audioBytes);
+//   } else if (input is PauseInput) {
+//     final duration = (input.delayMS / 1000).round();
+//     audioSource = PauseAudioSource(durationParam: Duration(seconds: duration));
+//   }
+
+//   if (audioSource != null) {
+//     await store.state.playerState.audioHandler
+//         ?.setPlayerAudioSource(audioSource);
+
+//     await store.state.playerState.audioHandler?.play();
+//   }
+
+//   next(action);
+// }
 
 Future<void> _playNextInputMiddleware(
     Store<AppState> store, PlayNextInputAction action, next) async {
@@ -222,7 +253,26 @@ Future<void> _playNextInputMiddleware(
 
   final nextInput = currentProject.inputs[currentInputIndex + 1];
 
-  store.dispatch(PlayInputAction(input: nextInput));
+  store.dispatch(
+      PlayProjectAction(project: currentProject, playInput: nextInput));
+
+  next(action);
+}
+
+Future<void> _playPrevInputMiddleware(
+  Store<AppState> store,
+  PlayPrevInputAction action,
+  NextDispatcher next,
+) async {
+  next(action);
+}
+
+Future<void> _pauseAudioMiddleware(
+  Store<AppState> store,
+  PauseAudioAction action,
+  NextDispatcher next,
+) async {
+  await store.state.playerState.audioHandler?.pause();
 
   next(action);
 }

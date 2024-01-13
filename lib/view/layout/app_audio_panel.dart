@@ -16,9 +16,9 @@ class AppAudioPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, Project?>(
-      converter: (store) => store.state.playerState.playingProject,
-      builder: (context, playingProject) {
+    return StoreConnector<AppState, AudioPlayerState>(
+      converter: (store) => store.state.playerState,
+      builder: (context, playerState) {
         return Container(
           // clipBehavior: Clip.antiAlias,
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -39,44 +39,50 @@ class AppAudioPanel extends StatelessWidget {
                       Theme.of(context).colorScheme.secondary.withOpacity(0.35),
                   borderRadius: BorderRadius.circular(32),
                 ),
-                child: playingProject == null
-                    ? Center(
-                        child: Text(
-                          'No Project Playing',
-                          style: Theme.of(context).textTheme.headlineSmall,
+                child: playerState.isAudioLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          semanticsLabel: 'Audio Panel Loading',
                         ),
                       )
-                    : Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 32,
-                        ),
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              height: audioBarHeight,
+                    : playerState.playingProject == null
+                        ? Center(
+                            child: Text(
+                              'No Project Playing',
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
-                            Text(
-                              playingProject.name,
-                              style: Theme.of(context).textTheme.bodyLarge,
+                          )
+                        : Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 32,
                             ),
-                            const SizedBox(
-                              height: 32,
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: audioBarHeight,
+                                ),
+                                Text(
+                                  playerState.playingProject!.name,
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                                const SizedBox(
+                                  height: 32,
+                                ),
+                                const Expanded(
+                                  flex: 5,
+                                  child: AudioPanelInputCarousel(),
+                                ),
+                                const SizedBox(
+                                  height: 32,
+                                ),
+                                const Expanded(
+                                  flex: 3,
+                                  child: AudioPanelControls(),
+                                ),
+                              ],
                             ),
-                            const Expanded(
-                              flex: 5,
-                              child: AudioPanelInputCarousel(),
-                            ),
-                            const SizedBox(
-                              height: 32,
-                            ),
-                            const Expanded(
-                              flex: 3,
-                              child: AudioPanelControls(),
-                            ),
-                          ],
-                        ),
-                      ),
+                          ),
               ),
             ),
           ),

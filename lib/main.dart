@@ -16,7 +16,7 @@ void main() async {
   if (kDebugMode) {
     FirebaseFunctions.instanceFor(region: 'us-central1')
         // from PS > (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.AddressState -eq "Preferred"}).IPAddress
-        .useFunctionsEmulator('192.168.1.80', 5001);
+        .useFunctionsEmulator('192.168.1.69', 5001);
   }
 
   runApp(const AppLayout());

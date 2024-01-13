@@ -82,6 +82,7 @@ class AppColors {
 class AppTheme {
   static final light = ThemeData(
     useMaterial3: true,
+    disabledColor: AppColors.primaryLight.shade600.withOpacity(0.45),
     colorScheme: ColorScheme.light(
       primary: AppColors.primaryLight,
       onPrimary: AppColors.secondaryLight.shade50,

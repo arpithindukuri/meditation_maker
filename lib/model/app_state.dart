@@ -10,26 +10,26 @@ enum AppScreen {
 }
 
 class AudioPlayerState {
-  bool isPlaying;
+  bool isAudioLoading;
   AppAudioHandler? audioHandler;
   Project? playingProject;
   Input? playingInput;
 
   AudioPlayerState({
-    this.isPlaying = false,
+    this.isAudioLoading = false,
     this.audioHandler,
     this.playingProject,
     this.playingInput,
   });
 
   AudioPlayerState copyWith({
-    bool? isPlaying,
+    bool? isAudioLoading,
     AppAudioHandler? audioHandler,
     Wrapped<Project?>? playingProject,
     Wrapped<Input?>? playingInput,
   }) {
     return AudioPlayerState(
-      isPlaying: isPlaying ?? this.isPlaying,
+      isAudioLoading: isAudioLoading ?? this.isAudioLoading,
       audioHandler: audioHandler ?? this.audioHandler,
       playingProject:
           playingProject != null ? playingProject.value : this.playingProject,

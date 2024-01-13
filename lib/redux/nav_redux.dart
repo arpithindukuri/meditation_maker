@@ -52,6 +52,9 @@ class NavExitProjectEditorAction extends NavAction {
 final List<
         dynamic Function(Store<AppState>, dynamic, dynamic Function(dynamic))>
     currentScreenMiddleware = [
+  TypedMiddleware<AppState, NavExitProjectListAction>(
+    _navExitProjectListMiddleware,
+  ).call,
   TypedMiddleware<AppState, NavToProjectEditorAction>(
     _navToProjectEditorMiddleware,
   ).call,
@@ -60,15 +63,35 @@ final List<
   ).call,
 ];
 
+void _navExitProjectListMiddleware(
+  Store<AppState> store,
+  NavExitProjectListAction action,
+  NextDispatcher next,
+) {
+  store.dispatch(SetPlayerStateAction(
+      playerState: store.state.playerState.copyWith(
+    playingProject: const Wrapped.value(null),
+    playingInput: const Wrapped.value(null),
+  )));
+
+  next(action);
+}
+
 void _navToProjectEditorMiddleware(
-    Store<AppState> store, NavToProjectEditorAction action, next) {
+  Store<AppState> store,
+  NavToProjectEditorAction action,
+  next,
+) {
   store.dispatch(SetEditingProjectAction(project: action.project));
 
   next(action);
 }
 
 void _navExitProjectEditorMiddleware(
-    Store<AppState> store, NavExitProjectEditorAction action, next) {
+  Store<AppState> store,
+  NavExitProjectEditorAction action,
+  next,
+) {
   store.dispatch(SetEditingProjectAction(project: null));
 
   next(action);
@@ -82,28 +105,37 @@ final currentScreenReducer = combineReducers<AppScreen>([
       .call,
 ]);
 
-AppScreen _navToProjectList(AppScreen state, NavToProjectListAction action) {
+AppScreen _navToProjectList(
+  AppScreen state,
+  NavToProjectListAction action,
+) {
   Navigator.pushNamed(action.context, '/${action.newScreen.name}');
 
   return action.newScreen;
 }
 
 AppScreen _navExitProjectList(
-    AppScreen state, NavExitProjectListAction action) {
+  AppScreen state,
+  NavExitProjectListAction action,
+) {
   Navigator.pop(action.context);
 
   return action.newScreen;
 }
 
 AppScreen _navToProjectEditor(
-    AppScreen state, NavToProjectEditorAction action) {
+  AppScreen state,
+  NavToProjectEditorAction action,
+) {
   Navigator.pushNamed(action.context, '/${action.newScreen.name}');
 
   return action.newScreen;
 }
 
 AppScreen _navExitProjectEditor(
-    AppScreen state, NavExitProjectEditorAction action) {
+  AppScreen state,
+  NavExitProjectEditorAction action,
+) {
   Navigator.pop(action.context);
 
   return action.newScreen;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:meditation_maker/model/app_state.dart';
 import 'package:meditation_maker/redux/nav_redux.dart';
+import 'package:meditation_maker/view/layout/app_audio_bar.dart';
 import 'package:meditation_maker/view/layout/app_top_bar.dart';
 import 'package:redux/redux.dart';
 
@@ -74,95 +75,109 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, Store<AppState>>(
       converter: (store) => store,
-      builder: (context, store) => Column(
-        children: [
-          Stack(
-            children: [
-              ..._getHero(Theme.of(context).brightness == Brightness.dark),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 42),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: appbarHeight),
-                    Text(
-                      "Good Morning, Daniel",
-                      style: TextStyle(
-                        fontSize:
-                            Theme.of(context).textTheme.displaySmall!.fontSize!,
-                        fontWeight: FontWeight.w600,
-                        color: Theme.of(context).colorScheme.onSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "It's time to meditate.",
-                      style: TextStyle(
-                        fontSize:
-                            Theme.of(context).textTheme.titleLarge!.fontSize!,
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.onSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          // 2x2 grid of 4 buttons
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
+      builder: (context, store) => SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height - audioBarHeight,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ..._getHero(Theme.of(context).brightness == Brightness.dark),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 42),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    child: Row(
-                      children: [
-                        _getButton(
-                          context: context,
-                          labelText: "New Project",
-                          onPressed: () {},
-                          isPrimary: true,
-                          icon: const Icon(Icons.add_rounded),
-                        ),
-                        _getButton(
-                          context: context,
-                          labelText: "Project List",
-                          onPressed: () {
-                            store.dispatch(
-                                NavToProjectListAction(context: context));
-                          },
-                          isPrimary: true,
-                          icon: const Icon(Icons.list_rounded),
-                        ),
-                      ],
-                    ),
+                    flex: 8,
+                    child: _getHeader(context),
                   ),
+                  // 2x2 grid of 4 buttons
                   Expanded(
-                    child: Row(
-                      children: [
-                        _getButton(
-                          context: context,
-                          labelText: "Store",
-                          onPressed: () {},
-                          icon: const Icon(Icons.store_rounded),
-                        ),
-                        _getButton(
-                          context: context,
-                          labelText: "Settings",
-                          onPressed: () {},
-                          icon: const Icon(Icons.settings_rounded),
-                        ),
-                      ],
-                    ),
+                    flex: 3,
+                    child: _getButtons(context, store),
                   ),
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Padding _getButtons(BuildContext context, Store<AppState> store) {
+    return Padding(
+      padding: const EdgeInsets.all(0),
+      child: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                _getButton(
+                  context: context,
+                  labelText: "New Project",
+                  onPressed: () {},
+                  isPrimary: true,
+                  icon: const Icon(Icons.add_rounded),
+                ),
+                _getButton(
+                  context: context,
+                  labelText: "Project List",
+                  onPressed: () {
+                    store.dispatch(NavToProjectListAction(context: context));
+                  },
+                  isPrimary: true,
+                  icon: const Icon(Icons.list_rounded),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Row(
+              children: [
+                _getButton(
+                  context: context,
+                  labelText: "Store",
+                  onPressed: () {},
+                  icon: const Icon(Icons.store_rounded),
+                ),
+                _getButton(
+                  context: context,
+                  labelText: "Settings",
+                  onPressed: () {},
+                  icon: const Icon(Icons.settings_rounded),
+                ),
+              ],
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  Column _getHeader(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: appbarHeight),
+        Text(
+          "Good Morning,",
+          style: TextStyle(
+            fontSize: Theme.of(context).textTheme.displaySmall!.fontSize!,
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.onSecondary,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          "It's time to meditate.",
+          style: TextStyle(
+            fontSize: Theme.of(context).textTheme.titleLarge!.fontSize!,
+            fontWeight: FontWeight.w400,
+            color: Theme.of(context).colorScheme.onSecondary,
+          ),
+        )
+      ],
     );
   }
 }
